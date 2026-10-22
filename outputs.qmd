@@ -13,7 +13,7 @@ The script writes everything to the `output` folder.
 | [`README.txt`](output/README.txt) | — | a short note for the archive |
 | [`p2p-azores-2026.zip`](output/p2p-azores-2026.zip) | — | all files together |
 
-The zip file is the easiest thing to upload to the IPT.
+The zip file is ready to upload to the IPT.
 
 ## What is in each table?
 

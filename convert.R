@@ -53,19 +53,25 @@ HABITAT <- "Rocky intertidal, midtide level"
 LOCATION_ID <- paste(PROJECT_CODE, COUNTRY_ID_CODE, ISLAND_CODE, SITE_CODE,
                      sep = ":")
 
+# The metadata uses the short name "TG-7".
+CAMERA <- "OM System Tough TG-7"
+
 # The sampling method and the physical quadrat.
 POINTS_PER_IMAGE <- 100
 QUADRAT_WIDTH_CM <- 25
 QUADRAT_HEIGHT_CM <- 25
 CAMERA_HEIGHT_CM <- 42
-COORDINATE_UNCERTAINTY_M <- 10
-PARENT_UNCERTAINTY_M <- 100
-SAMPLING_PROTOCOL <- paste(
-  "MBON Pole to Pole rocky intertidal photoquadrat protocol v3 (2025):",
-  "25 x 25 cm quadrat, camera at 42 cm, 100-point intercept grid",
-  "annotated in CoralNet (https://marinebon.org/p2p/)."
+COORDINATE_UNCERTAINTY_M <- 1   # photo events, from the camera GPS
+PARENT_UNCERTAINTY_M <- 100     # summary centre of all photo positions
+SAMPLING_PROTOCOL <- paste0(
+  "MBON Pole to Pole Rock Shores Intertidal PhotoQuadrat Protocol. ",
+  "25 x 25 cm quadrat with camera at 42cm. ",
+  "100-square intercept grid annotated in CoralNet. ",
+  "https://repository.oceanbestpractices.org/items/",
+  "6025a5e9-87b8-46eb-b422-328cb183e658 and ",
+  "https://marinebon.org/p2p/"
 )
-GEOREFERENCE_PROTOCOL <- "Consumer GPS recorded by the camera (Insta360 X4)"
+GEOREFERENCE_PROTOCOL <- "GPS built into the OM System Tough TG-7 camera"
 GEODETIC_DATUM <- "WGS84"
 
 # =============================================================================
@@ -79,47 +85,41 @@ TAXA <- list(
     label_id = "4095", name = "Chlorophyta", aphia = "801",
     authorship = "Pascher, 1914", rank = "phylum",
     kingdom = "Plantae", phylum = "Chlorophyta",
-    class = "", order = "", family = "", genus = "",
-    remark = "Green algae; identified to phylum"
+    class = "", order = "", family = "", genus = ""
   ),
   CIRRIPE = list(
     label_id = "2812", name = "Chthamalus stellatus",
     aphia = "106231", authorship = "(Poli, 1791)", rank = "species",
     kingdom = "Animalia", phylum = "Arthropoda",
     class = "Thecostraca", order = "Balanomorpha",
-    family = "Chthamalidae", genus = "Chthamalus",
-    remark = "Barnacle; CoralNet label CIRRIPE mapped to Chthamalus stellatus"
+    family = "Chthamalidae", genus = "Chthamalus"
   ),
   CORALLINA = list(
     label_id = "4721", name = "Corallinaceae", aphia = "143691",
     authorship = "Lamouroux, 1812", rank = "family",
     kingdom = "Plantae", phylum = "Rhodophyta",
     class = "Florideophyceae", order = "Corallinales",
-    family = "Corallinaceae", genus = "",
-    remark = "Coralline red algae; identified to family"
+    family = "Corallinaceae", genus = ""
   ),
   RHODO = list(
     label_id = "4081", name = "Rhodophyta", aphia = "852",
     authorship = "Wettstein, 1901", rank = "phylum",
     kingdom = "Plantae", phylum = "Rhodophyta",
-    class = "", order = "", family = "", genus = "",
-    remark = "Red algae; identified to phylum"
+    class = "", order = "", family = "", genus = ""
   ),
   RVL = list(
     label_id = "11406", name = "Rivularia", aphia = "146623",
     authorship = "C.Agardh ex Bornet & Flahault, 1886", rank = "genus",
     kingdom = "Bacteria", phylum = "Cyanobacteria",
     class = "Cyanophyceae", order = "Nostocales",
-    family = "Rivulariaceae", genus = "Rivularia",
-    remark = "Cyanobacterium; one point in one image, review before publishing"
+    family = "Rivulariaceae", genus = "Rivularia"
   ),
   ULVA = list(
     label_id = "584", name = "Ulva", aphia = "144296",
     authorship = "Linnaeus, 1753", rank = "genus",
     kingdom = "Plantae", phylum = "Chlorophyta",
     class = "Ulvophyceae", order = "Ulvales",
-    family = "Ulvaceae", genus = "Ulva",
-    remark = "Green algae; identified to genus"
+    family = "Ulvaceae", genus = "Ulva"
   )
 )
 
@@ -148,8 +148,7 @@ OCCURRENCE_COLUMNS <- c(
   "scientificNameAuthorship", "taxonRank", "kingdom", "phylum", "class",
   "order", "family", "genus", "basisOfRecord", "occurrenceStatus",
   "organismQuantity", "organismQuantityType",
-  "identificationVerificationStatus", "identifiedBy", "taxonRemarks",
-  "identificationRemarks", "occurrenceRemarks"
+  "identifiedBy", "identificationRemarks", "occurrenceRemarks"
 )
 
 EMOF_COLUMNS <- c(
@@ -239,7 +238,7 @@ measurement <- function(event_id, occurrence_id, name, mtype, value, unit,
 build_events <- function(metadata) {
   dates <- sort(unique(metadata$Date))
   if (length(dates) != 1) {
-    stop("This simple script expects one survey date. Found: ",
+    stop("This script expects one survey date. Found: ",
          paste(dates, collapse = ", "))
   }
   date <- dates[[1]]
@@ -318,7 +317,7 @@ build_events <- function(metadata) {
       fieldNumber = image,
       eventRemarks = paste0(
         "Photoquadrat ", image, "; camera height ", height, " cm; ",
-        "camera ", row$Camera, "; field group ", row$Group, "; ",
+        "camera ", CAMERA, "; field group ", row$Group, "; ",
         "strobes ", row$Strobes, "; comment: ", row$Comments, ". ",
         "Sampled above water; depth not recorded."
       )
@@ -377,7 +376,12 @@ build_occurrences <- function(annotations, image_events, metadata) {
     count <- nrow(points)
     machine <- sum(points$Annotator == "robot")
     human <- count - machine
-    annotators <- sort(unique(points$Annotator), method = "radix")
+    annotators <- ifelse(
+      points$Annotator == "robot",
+      "CoralNet machine learning annotator",
+      points$Annotator
+    )
+    annotators <- sort(unique(annotators), method = "radix")
     total <- as.integer(total_points[[image]])
     percent <- sprintf("%.2f", count / total * 100)
     event_id <- image_events[[image]]
@@ -406,13 +410,7 @@ build_occurrences <- function(annotations, image_events, metadata) {
       occurrenceStatus = "detected",
       organismQuantity = percent,
       organismQuantityType = "percent cover",
-      identificationVerificationStatus = if (machine > 0) {
-        "unconfirmed"
-      } else {
-        "confirmed"
-      },
       identifiedBy = paste(annotators, collapse = "; "),
-      taxonRemarks = taxon$remark,
       identificationRemarks = paste0(
         "CoralNet label ", code, " (ID ", taxon$label_id, "); ",
         count, " of ", total, " points; ",

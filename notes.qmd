@@ -2,7 +2,7 @@
 title: "Notes and limits"
 ---
 
-This is a small example.
+This example covers one survey.
 These notes explain what it does and what it does not do.
 
 ## The survey
@@ -10,6 +10,10 @@ These notes explain what it does and what it does not do.
 - The script expects one survey date.
 - The example has one transect and one tidal level.
 - Each photo must have 100 points.
+- The camera is the OM System Tough TG-7; the metadata uses the short name `TG-7`.
+- The GPS positions come from the camera's built-in GPS.
+- Photo events use a 1 metre position uncertainty.
+- The parent event uses 100 metres because it is a survey centre point.
 - The script stops if a label is not in the `TAXA` table.
 
 ## The parent event
@@ -24,9 +28,9 @@ The child events are the real photo positions.
 `recordedBy` is free text at the top of the script.
 It is written to the parent event and to every photo event.
 
-`identifiedBy` is the CoralNet username.
-It includes `robot` when the computer made the identification.
-A mixed row can have more than one username, separated by `; `.
+`identifiedBy` lists the CoralNet usernames for human annotations.
+The CoralNet `robot` value is written as `CoralNet machine learning annotator`.
+A mixed row can have more than one name, separated by `; `.
 
 `occurrenceStatus` is `detected` on every row.
 `notDetected` is the other Darwin Core value, but no absence rows are written.
@@ -47,7 +51,7 @@ A mixed row can have more than one username, separated by `; `.
 - `MAF` and `MAEN` are deferred.
 - `SC` and `Unc` are left out.
 - Coordinates are rounded to 6 decimal places.
-- The parent event has a wider position uncertainty than the photo events.
+- Photo events use 1 metre position uncertainty; the parent event uses 100 metres.
 
 ## Change it for a new survey
 

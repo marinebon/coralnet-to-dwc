@@ -42,7 +42,7 @@ Each child event uses its own photo position.
 
 Each photo must have 100 points.
 The script stops if a photo has a different number.
-This keeps the percent cover easy to read: 1 point = 1 percent.
+This keeps the percent cover clear: 1 point = 1 percent.
 
 ### 4. Make the occurrences
 

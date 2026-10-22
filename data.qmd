@@ -22,13 +22,21 @@ Each row in `metadata.csv` has:
 - the date
 - the latitude and longitude
 - the camera height
-- the camera name
+- the camera name (the short name `TG-7`)
 - the field group
 
 All 59 photos are from one survey.
 The date is 2026-10-20.
 The place is Forte do Negrito, Terceira, Azores, Portugal.
 The habitat is rocky intertidal, midtide level.
+
+The camera is the **OM System Tough TG-7**.
+The `Camera` column uses the short name `TG-7`.
+The scripts write the full camera name in the event remarks.
+
+The GPS positions come from the GPS built into the OM System Tough TG-7 camera.
+Photo events use a position uncertainty of 1 metre.
+The parent event uses 100 metres because it is a centre point for the survey.
 
 ## The points
 
@@ -84,9 +92,9 @@ Please review this record before publishing.
 `recordedBy` is free text at the top of the script.
 It is not read from the CSV files.
 
-`identifiedBy` uses the CoralNet username exactly.
-It includes `robot` when the computer made the identification.
-A mixed row can have more than one username, separated by `; `.
+`identifiedBy` lists the CoralNet usernames for human annotations.
+The CoralNet `robot` value is written as `CoralNet machine learning annotator`.
+A mixed row can have more than one name, separated by `; `.
 
 ## The taxonomy
 

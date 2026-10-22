@@ -33,7 +33,17 @@ COUNTRY_CODE = "PT"          # ISO 3166-1 alpha-2
 COUNTRY_ID_CODE = "PRT"      # ISO 3166-1 alpha-3, used in the identifiers
 LOCALITY = "Forte do Negrito"
 POINTS_PER_IMAGE = 100
+
+# The metadata uses the short name "TG-7".
+CAMERA = "OM System Tough TG-7"
+
+# Photo events use a 1 m position uncertainty.
+COORDINATE_UNCERTAINTY_M = 1
 ```
+
+Photo events use 1 metre position uncertainty.
+The georeference protocol says the GPS is built into the camera.
+The sampling protocol cites the MBON protocol and its two reference links.
 
 The script writes this text to every event:
 
@@ -61,7 +71,6 @@ TAXA = {
         "authorship": "Pascher, 1914", "rank": "phylum",
         "kingdom": "Plantae", "phylum": "Chlorophyta",
         "class": "", "order": "", "family": "", "genus": "",
-        "remark": "Green algae; identified to phylum",
     },
     "CIRRIPE": {
         "label_id": "2812", "name": "Chthamalus stellatus",
@@ -69,7 +78,6 @@ TAXA = {
         "kingdom": "Animalia", "phylum": "Arthropoda",
         "class": "Thecostraca", "order": "Balanomorpha",
         "family": "Chthamalidae", "genus": "Chthamalus",
-        "remark": "Barnacle; CoralNet label CIRRIPE mapped to Chthamalus stellatus",
     },
     # ... four more taxa ...
 }
@@ -152,7 +160,7 @@ print("  parent:", events[1]["parentEventID"])
 
 The script groups the points by image and label.
 It counts all points.
-It also counts the points made by `robot`.
+It also finds the points made by CoralNet's automated classifier, which is stored as `robot`.
 
 ```python
 groups = {}
@@ -164,7 +172,16 @@ for (image, code), rows in groups.items():
     points = len(rows)
     machine = sum(1 for row in rows if row["Annotator"] == "robot")
     human = points - machine
+    annotators = sorted({
+        "CoralNet machine learning annotator"
+        if row["Annotator"] == "robot"
+        else row["Annotator"]
+        for row in rows
+    })
 ```
+
+The `robot` value is written as `CoralNet machine learning annotator` in `identifiedBy`.
+Human usernames are kept as they are.
 
 The percent cover is points divided by total points, times 100.
 

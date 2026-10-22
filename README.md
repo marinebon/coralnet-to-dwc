@@ -63,6 +63,12 @@ Change these first:
 The Python and R scripts should stay in step.
 They write the same CSV files.
 
+The example camera is the **OM System Tough TG-7**.
+The metadata uses the short name `TG-7`.
+The scripts write the full name in the event remarks.
+The GPS positions come from the camera's built-in GPS.
+Photo events use 1 metre position uncertainty; the parent event uses 100 metres.
+
 ## Website
 
 Build the site with:
@@ -76,7 +82,7 @@ Run the conversion first so the output files exist.
 
 ## Limits
 
-This is a small example, not a general tool.
+This example covers one survey. It is not a general tool.
 It expects one survey date and 100 points per photo.
 It does not write EML, image URLs, or absence records.
 See `notes.qmd` for the full list.

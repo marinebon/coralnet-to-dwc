@@ -53,11 +53,9 @@
     <field index="13" term="http://rs.tdwg.org/dwc/terms/occurrenceStatus" />
     <field index="14" term="http://rs.tdwg.org/dwc/terms/organismQuantity" />
     <field index="15" term="http://rs.tdwg.org/dwc/terms/organismQuantityType" />
-    <field index="16" term="http://rs.tdwg.org/dwc/terms/identificationVerificationStatus" />
-    <field index="17" term="http://rs.tdwg.org/dwc/terms/identifiedBy" />
-    <field index="18" term="http://rs.tdwg.org/dwc/terms/taxonRemarks" />
-    <field index="19" term="http://rs.tdwg.org/dwc/terms/identificationRemarks" />
-    <field index="20" term="http://rs.tdwg.org/dwc/terms/occurrenceRemarks" />
+    <field index="16" term="http://rs.tdwg.org/dwc/terms/identifiedBy" />
+    <field index="17" term="http://rs.tdwg.org/dwc/terms/identificationRemarks" />
+    <field index="18" term="http://rs.tdwg.org/dwc/terms/occurrenceRemarks" />
   </extension>
   <extension encoding="UTF-8" fieldsTerminatedBy="," linesTerminatedBy="&#10;" fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/MeasurementOrFact">
     <files><location>extendedmeasurementorfact.csv</location></files>

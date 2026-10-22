@@ -56,19 +56,25 @@ WATER_BODY = "North Atlantic Ocean"
 HABITAT = "Rocky intertidal, midtide level"
 LOCATION_ID = f"{PROJECT_CODE}:{COUNTRY_ID_CODE}:{ISLAND_CODE}:{SITE_CODE}"
 
+# The metadata uses the short name "TG-7".
+CAMERA = "OM System Tough TG-7"
+
 # The sampling method and the physical quadrat.
 POINTS_PER_IMAGE = 100
 QUADRAT_WIDTH_CM = 25
 QUADRAT_HEIGHT_CM = 25
 CAMERA_HEIGHT_CM = 42
-COORDINATE_UNCERTAINTY_M = 10
-PARENT_UNCERTAINTY_M = 100
+COORDINATE_UNCERTAINTY_M = 1   # photo events, from the camera GPS
+PARENT_UNCERTAINTY_M = 100     # summary centre of all photo positions
 SAMPLING_PROTOCOL = (
-    "MBON Pole to Pole rocky intertidal photoquadrat protocol v3 (2025): "
-    "25 x 25 cm quadrat, camera at 42 cm, 100-point intercept grid "
-    "annotated in CoralNet (https://marinebon.org/p2p/)."
+    "MBON Pole to Pole Rock Shores Intertidal PhotoQuadrat Protocol. "
+    "25 x 25 cm quadrat with camera at 42cm. "
+    "100-square intercept grid annotated in CoralNet. "
+    "https://repository.oceanbestpractices.org/items/"
+    "6025a5e9-87b8-46eb-b422-328cb183e658 and "
+    "https://marinebon.org/p2p/"
 )
-GEOREFERENCE_PROTOCOL = "Consumer GPS recorded by the camera (Insta360 X4)"
+GEOREFERENCE_PROTOCOL = "GPS built into the OM System Tough TG-7 camera"
 GEODETIC_DATUM = "WGS84"
 
 # =============================================================================
@@ -83,7 +89,6 @@ TAXA = {
         "authorship": "Pascher, 1914", "rank": "phylum",
         "kingdom": "Plantae", "phylum": "Chlorophyta",
         "class": "", "order": "", "family": "", "genus": "",
-        "remark": "Green algae; identified to phylum",
     },
     "CIRRIPE": {
         "label_id": "2812", "name": "Chthamalus stellatus",
@@ -91,7 +96,6 @@ TAXA = {
         "kingdom": "Animalia", "phylum": "Arthropoda",
         "class": "Thecostraca", "order": "Balanomorpha",
         "family": "Chthamalidae", "genus": "Chthamalus",
-        "remark": "Barnacle; CoralNet label CIRRIPE mapped to Chthamalus stellatus",
     },
     "CORALLINA": {
         "label_id": "4721", "name": "Corallinaceae", "aphia": "143691",
@@ -99,14 +103,12 @@ TAXA = {
         "kingdom": "Plantae", "phylum": "Rhodophyta",
         "class": "Florideophyceae", "order": "Corallinales",
         "family": "Corallinaceae", "genus": "",
-        "remark": "Coralline red algae; identified to family",
     },
     "RHODO": {
         "label_id": "4081", "name": "Rhodophyta", "aphia": "852",
         "authorship": "Wettstein, 1901", "rank": "phylum",
         "kingdom": "Plantae", "phylum": "Rhodophyta",
         "class": "", "order": "", "family": "", "genus": "",
-        "remark": "Red algae; identified to phylum",
     },
     "RVL": {
         "label_id": "11406", "name": "Rivularia", "aphia": "146623",
@@ -114,7 +116,6 @@ TAXA = {
         "kingdom": "Bacteria", "phylum": "Cyanobacteria",
         "class": "Cyanophyceae", "order": "Nostocales",
         "family": "Rivulariaceae", "genus": "Rivularia",
-        "remark": "Cyanobacterium; one point in one image, review before publishing",
     },
     "ULVA": {
         "label_id": "584", "name": "Ulva", "aphia": "144296",
@@ -122,7 +123,6 @@ TAXA = {
         "kingdom": "Plantae", "phylum": "Chlorophyta",
         "class": "Ulvophyceae", "order": "Ulvales",
         "family": "Ulvaceae", "genus": "Ulva",
-        "remark": "Green algae; identified to genus",
     },
 }
 
@@ -151,8 +151,7 @@ OCCURRENCE_COLUMNS = (
     "occurrenceID eventID scientificName scientificNameID "
     "scientificNameAuthorship taxonRank kingdom phylum class order family "
     "genus basisOfRecord occurrenceStatus organismQuantity "
-    "organismQuantityType identificationVerificationStatus identifiedBy "
-    "taxonRemarks identificationRemarks occurrenceRemarks"
+    "organismQuantityType identifiedBy identificationRemarks occurrenceRemarks"
 ).split()
 
 EMOF_COLUMNS = (
@@ -242,7 +241,7 @@ def build_events(metadata):
     dates = sorted({row["Date"] for row in metadata})
     if len(dates) != 1:
         raise SystemExit(
-            "This simple script expects one survey date. "
+            "This script expects one survey date. "
             f"Found these dates: {', '.join(dates)}"
         )
     date = dates[0]
@@ -313,7 +312,7 @@ def build_events(metadata):
             "fieldNumber": image,
             "eventRemarks": (
                 f"Photoquadrat {image}; camera height {height} cm; "
-                f"camera {row.get('Camera', '')}; "
+                f"camera {CAMERA}; "
                 f"field group {row.get('Group', '')}; "
                 f"strobes {row.get('Strobes', '')}; "
                 f"comment: {row.get('Comments', '')}. "
@@ -380,7 +379,14 @@ def build_occurrences(annotations, image_events, metadata):
         points = len(rows)
         machine = sum(1 for row in rows if row["Annotator"] == "robot")
         human = points - machine
-        annotators = sorted({row["Annotator"] for row in rows})
+        annotators = sorted({
+            (
+                "CoralNet machine learning annotator"
+                if row["Annotator"] == "robot"
+                else row["Annotator"]
+            )
+            for row in rows
+        })
         total = total_points[image]
         percent = f"{points / total * 100:.2f}"
         event_id = image_events[image]
@@ -407,11 +413,7 @@ def build_occurrences(annotations, image_events, metadata):
             "occurrenceStatus": "detected",
             "organismQuantity": percent,
             "organismQuantityType": "percent cover",
-            "identificationVerificationStatus": (
-                "unconfirmed" if machine > 0 else "confirmed"
-            ),
             "identifiedBy": "; ".join(annotators),
-            "taxonRemarks": taxon["remark"],
             "identificationRemarks": (
                 f"CoralNet label {code} (ID {taxon['label_id']}); "
                 f"{points} of {total} points; "
