@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Python notebook – CoralNet to Darwin Core</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a0b7a6eada01d555777044a47acbe283.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">CoralNet to Darwin Core</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./steps.html"> 
+<span class="menu-text">Steps</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data.html"> 
+<span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./python.html" aria-current="page"> 
+<span class="menu-text">Python</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./r.html"> 
+<span class="menu-text">R</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./outputs.html"> 
+<span class="menu-text">Outputs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#settings" id="toc-settings" class="nav-link active" data-scroll-target="#settings">1. Settings</a></li>
+  <li><a href="#the-taxa-table" id="toc-the-taxa-table" class="nav-link" data-scroll-target="#the-taxa-table">2. The TAXA table</a></li>
+  <li><a href="#read-the-files" id="toc-read-the-files" class="nav-link" data-scroll-target="#read-the-files">3. Read the files</a></li>
+  <li><a href="#make-the-events" id="toc-make-the-events" class="nav-link" data-scroll-target="#make-the-events">4. Make the events</a></li>
+  <li><a href="#count-the-points" id="toc-count-the-points" class="nav-link" data-scroll-target="#count-the-points">5. Count the points</a></li>
+  <li><a href="#make-the-measurements" id="toc-make-the-measurements" class="nav-link" data-scroll-target="#make-the-measurements">6. Make the measurements</a></li>
+  <li><a href="#write-the-files" id="toc-write-the-files" class="nav-link" data-scroll-target="#write-the-files">7. Write the files</a></li>
+  <li><a href="#full-script" id="toc-full-script" class="nav-link" data-scroll-target="#full-script">Full script</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Python notebook</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This page follows <code>convert.py</code> from top to bottom. The code is shown in small parts. The output comes from the example data.</p>
+<p>The full script is at the bottom. Run it from the project folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> convert.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="settings" class="level2">
+<h2 class="anchored" data-anchor-id="settings">1. Settings</h2>
+<p>The top of the script holds the names and numbers. There is no config file. Change these values for a new survey.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>BASE_DIR <span class="op">=</span> Path(<span class="va">__file__</span>).resolve().parent</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>INPUT_DIR <span class="op">=</span> BASE_DIR <span class="op">/</span> <span class="st">"data"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>OUTPUT_DIR <span class="op">=</span> BASE_DIR <span class="op">/</span> <span class="st">"output"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter the names of the people who recorded each field group.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a pipe (|) between names when a group has more than one recorder.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>RECORDED_BY <span class="op">=</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_1"</span>: (</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Hannah Heutz | Biel Masnou Domènech | Valéria Prando | "</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Ana Soler-Fajardo | Teresa Madurell"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_2"</span>: (</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Albert Martinez | Marco Simoes | Aghogho Kolawole-Daniels | "</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eunice Opeyemi Idowu | Hector Serrano Cereijo"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_3"</span>: (</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Martha Vounatsi | Nhanque Filipe | Abigail Mwalimu | "</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Sébastien Lhoumeau | Mayday Haulofu | Ahmed Harat"</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_4"</span>: (</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Monika Szynaka | Pilar Pérez Abellán | Alfonso Ferreira Sarracino | "</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Nestor Echedey Bosch Guerra"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>PROJECT_CODE <span class="op">=</span> <span class="st">"MBON-P2P"</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>COUNTRY_CODE <span class="op">=</span> <span class="st">"PT"</span>          <span class="co"># ISO 3166-1 alpha-2</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>COUNTRY_ID_CODE <span class="op">=</span> <span class="st">"PRT"</span>      <span class="co"># ISO 3166-1 alpha-3, used in the identifiers</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>LOCALITY <span class="op">=</span> <span class="st">"Forte do Negrito"</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>POINTS_PER_IMAGE <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># The metadata uses the short name "TG-7".</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>CAMERA <span class="op">=</span> <span class="st">"OM System Tough TG-7"</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Photo events use a 1 m position uncertainty.</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>COORDINATE_UNCERTAINTY_M <span class="op">=</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Photo events use 1 metre position uncertainty. The georeference protocol says the GPS is built into the camera. The sampling protocol cites the MBON protocol and its two reference links.</p>
+<p>Each occurrence uses the string for its photo’s group:</p>
+<div id="5de60aab" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-stdout">
+<pre><code>survey ID:         MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE
+first photo ID:    MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE:G1:IMG0128
+photos:            207
+first recordedBy:  Hannah Heutz | Biel Masnou Domènech | Valéria Prando | Ana Soler-Fajardo | Teresa Madurell
+first identifiedBy: AnaSF_12|Oceans|gonzalopatagonia</code></pre>
+</div>
+</div>
+</section>
+<section id="the-taxa-table" class="level2">
+<h2 class="anchored" data-anchor-id="the-taxa-table">2. The TAXA table</h2>
+<p>Each label that becomes an occurrence has one entry. The entry has the CoralNet label ID, the scientific name, the AphiaID, and the taxonomy.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>TAXA <span class="op">=</span> {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CHLOROPHY"</span>: {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"4095"</span>, <span class="st">"name"</span>: <span class="st">"Chlorophyta"</span>, <span class="st">"aphia"</span>: <span class="st">"801"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Pascher, 1914"</span>, <span class="st">"rank"</span>: <span class="st">"phylum"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Plantae"</span>, <span class="st">"phylum"</span>: <span class="st">"Chlorophyta"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">""</span>, <span class="st">"order"</span>: <span class="st">""</span>, <span class="st">"family"</span>: <span class="st">""</span>, <span class="st">"genus"</span>: <span class="st">""</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CIRRIPE"</span>: {</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"2812"</span>, <span class="st">"name"</span>: <span class="st">"Chthamalus stellatus"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"aphia"</span>: <span class="st">"106231"</span>, <span class="st">"authorship"</span>: <span class="st">"(Poli, 1791)"</span>, <span class="st">"rank"</span>: <span class="st">"species"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Animalia"</span>, <span class="st">"phylum"</span>: <span class="st">"Arthropoda"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Thecostraca"</span>, <span class="st">"order"</span>: <span class="st">"Balanomorpha"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Chthamalidae"</span>, <span class="st">"genus"</span>: <span class="st">"Chthamalus"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... eight more taxa ...</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is the result for the example:</p>
+<div id="bb4f0ccc" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-stdout">
+<pre><code>Caloplaca marina           4 occurrences
+Chlorophyta              128 occurrences
+Chthamalus stellatus      90 occurrences
+Corallinaceae             95 occurrences
+Fucus                      6 occurrences
+Gastropoda                15 occurrences
+Gymnogongrus griffithsiae   4 occurrences
+Rhodophyta                98 occurrences
+Rivularia                  2 occurrences
+Ulva                      62 occurrences</code></pre>
+</div>
+</div>
+</section>
+<section id="read-the-files" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-files">3. Read the files</h2>
+<p>The script uses the standard <code>csv</code> module. There are no extra Python packages.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_rows(path):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Read a CSV file into a list of dictionaries."""</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> path.<span class="bu">open</span>(newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> handle:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(csv.DictReader(handle))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7603207d" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-stdout">
+<pre><code>207 images
+20700 points
+
+20261020__Transect_1_C0020128.jpg 2026-10-20 38.6553266666667 -27.2801316666667
+20261020__Transect_1_C0020129.jpg 2026-10-20 38.655305 -27.28016
+20261020__Transect_1_C0020130.jpg 2026-10-20 38.6553133333333 -27.2801483333333</code></pre>
+</div>
+</div>
+</section>
+<section id="make-the-events" class="level2">
+<h2 class="anchored" data-anchor-id="make-the-events">4. Make the events</h2>
+<p>The parent event is the whole survey. Each photo gets a child event. The photo event ID ends with the frame number.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> survey_id(date):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">":"</span>.join([</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        PROJECT_CODE, date.replace(<span class="st">"-"</span>, <span class="st">""</span>), COUNTRY_ID_CODE,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        ISLAND_CODE, SITE_CODE, STRATA,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> group_code(group):</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> group.replace(<span class="st">"Group_"</span>, <span class="st">"G"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> frame_from_name(image_name):</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    stem <span class="op">=</span> Path(image_name).stem</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    frame <span class="op">=</span> stem.split(<span class="st">"_"</span>)[<span class="op">-</span><span class="dv">1</span>][<span class="op">-</span><span class="dv">4</span>:]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> frame.isdigit():</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(<span class="ss">f"Cannot find a 4-digit frame number in </span><span class="sc">{</span>image_name<span class="sc">!r}</span><span class="ss">"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> frame</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The child event ID also includes the group, because the same frame number can appear in more than one group.</p>
+<div id="49c4ce8c" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-stdout">
+<pre><code>parent:
+  MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE
+   38.654377 -27.279514
+
+first child:
+  MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE:G1:IMG0128
+   38.655327 -27.280132
+  parent: MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE</code></pre>
+</div>
+</div>
+</section>
+<section id="count-the-points" class="level2">
+<h2 class="anchored" data-anchor-id="count-the-points">5. Count the points</h2>
+<p>The script groups the points by image and label. It counts all points. It also finds the points made by CoralNet’s automated classifier, which is stored as <code>robot</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> {}</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> annotations:</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    key <span class="op">=</span> (row[<span class="st">"Name"</span>], row[<span class="st">"Label code"</span>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    groups.setdefault(key, []).append(row)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (image, code), rows <span class="kw">in</span> groups.items():</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    points <span class="op">=</span> <span class="bu">len</span>(rows)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    machine <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> row <span class="kw">in</span> rows <span class="cf">if</span> row[<span class="st">"Annotator"</span>] <span class="op">==</span> <span class="st">"robot"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    human <span class="op">=</span> points <span class="op">-</span> machine</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    annotators <span class="op">=</span> <span class="bu">sorted</span>({</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"CoralNet machine learning annotator"</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> row[<span class="st">"Annotator"</span>] <span class="op">==</span> <span class="st">"robot"</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> row[<span class="st">"Annotator"</span>]</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> rows</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>robot</code> value is written as <code>CoralNet machine learning annotator</code> in <code>identifiedBy</code>. Human usernames are kept as they are. When a row has more than one value, the values are separated by <code>|</code>.</p>
+<p>The percent cover is points divided by total points, times 100.</p>
+<div id="240cc6b3" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-stdout">
+<pre><code>taxon                     cover  basis              identifiedBy
+--------------------------------------------------------------------------------
+Ulva                      56.00  HumanObservation   AnaSF_12|Oceans|gonzalopatagonia
+Chlorophyta               22.00  MachineObservation CoralNet machine learning annotator
+Corallinaceae              5.00  MachineObservation CoralNet machine learning annotator
+Rhodophyta                 2.00  MachineObservation CoralNet machine learning annotator
+Rhodophyta                12.00  HumanObservation   tmadurell
+Ulva                      70.00  HumanObservation   tmadurell
+Rhodophyta                 4.00  HumanObservation   tmadurell
+Chlorophyta               58.00  HumanObservation   tmadurell</code></pre>
+</div>
+</div>
+</section>
+<section id="make-the-measurements" class="level2">
+<h2 class="anchored" data-anchor-id="make-the-measurements">6. Make the measurements</h2>
+<p>A measurement is one number with a type and a unit. This helper keeps the rows short.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> measurement(event_id, occurrence_id, name, mtype, value, unit,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                unit_id<span class="op">=</span><span class="st">""</span>, type_id<span class="op">=</span><span class="st">""</span>, method<span class="op">=</span><span class="st">""</span>, remarks<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    prefix <span class="op">=</span> occurrence_id <span class="kw">or</span> event_id</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"eventID"</span>: event_id,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"occurrenceID"</span>: occurrence_id,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementID"</span>: <span class="ss">f"</span><span class="sc">{</span>prefix<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementType"</span>: mtype,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementTypeID"</span>: type_id,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementValue"</span>: value,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementUnit"</span>: unit,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementUnitID"</span>: unit_id,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementMethod"</span>: method,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementRemarks"</span>: remarks,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first measurements in the file are:</p>
+<div id="91fc38d2" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-stdout">
+<pre><code>quadrat area                                 0.0625 square metres
+camera height above substrate                    42 centimetres
+number of points classified as non-taxon         44 counts
+percent cover                                 56.00 percent
+number of points                                 56 counts</code></pre>
+</div>
+</div>
+</section>
+<section id="write-the-files" class="level2">
+<h2 class="anchored" data-anchor-id="write-the-files">7. Write the files</h2>
+<p>The script writes three CSV files. Then it writes <code>meta.xml</code>. Then it puts everything in a zip file.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_zip():</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"p2p-azores-2026.zip"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> zipfile.ZipFile(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        OUTPUT_DIR <span class="op">/</span> name, <span class="st">"w"</span>, compression<span class="op">=</span>zipfile.ZIP_DEFLATED</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    ) <span class="im">as</span> archive:</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> filename <span class="kw">in</span> [</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"event.csv"</span>, <span class="st">"occurrence.csv"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"extendedmeasurementorfact.csv"</span>, <span class="st">"meta.xml"</span>, <span class="st">"README.txt"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        ]:</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            archive.write(OUTPUT_DIR <span class="op">/</span> filename, arcname<span class="op">=</span>filename)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="dc70f4ad" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-stdout">
+<pre><code>output files:
+  event.csv                              181976 bytes
+  occurrence.csv                         264771 bytes
+  extendedmeasurementorfact.csv          879043 bytes
+  meta.xml                                 5284 bytes
+  README.txt                                910 bytes
+  p2p-azores-2026.zip                     43608 bytes
+
+zip contents:
+  event.csv
+  occurrence.csv
+  extendedmeasurementorfact.csv
+  meta.xml
+  README.txt</code></pre>
+</div>
+</div>
+</section>
+<section id="full-script" class="level2">
+<h2 class="anchored" data-anchor-id="full-script">Full script</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span><code>convert.py</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">Convert CoralNet photoquadrat files into a Darwin Core Archive for OBIS.</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">This is one file on purpose. Read it from top to bottom.</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">It uses only the Python standard library.</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">The file looks long because it lists every column and every taxon.</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">The conversion itself is six short steps.</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">Change the settings and the TAXA table, then run:</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">    python3 convert.py</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">It reads:</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">    data/metadata.csv</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">    data/annotations.csv</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co">It writes:</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co">    output/event.csv</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co">    output/occurrence.csv</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co">    output/extendedmeasurementorfact.csv</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co">    output/meta.xml</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co">    output/README.txt</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co">    output/p2p-azores-2026.zip</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> csv</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co"># SETTINGS</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Change these values for a new survey.</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>BASE_DIR <span class="op">=</span> Path(<span class="va">__file__</span>).resolve().parent</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>INPUT_DIR <span class="op">=</span> BASE_DIR <span class="op">/</span> <span class="st">"data"</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>OUTPUT_DIR <span class="op">=</span> BASE_DIR <span class="op">/</span> <span class="st">"output"</span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter the names of the people who recorded each field group.</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="co"># These strings go into occurrence.recordedBy.</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a pipe (|) between names when a group has more than one recorder.</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>RECORDED_BY <span class="op">=</span> {</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_1"</span>: (</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Hannah Heutz | Biel Masnou Domènech | Valéria Prando | "</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Ana Soler-Fajardo | Teresa Madurell"</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_2"</span>: (</span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Albert Martinez | Marco Simoes | Aghogho Kolawole-Daniels | "</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eunice Opeyemi Idowu | Hector Serrano Cereijo"</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_3"</span>: (</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Martha Vounatsi | Nhanque Filipe | Abigail Mwalimu | "</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Sébastien Lhoumeau | Mayday Haulofu | Ahmed Harat"</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group_4"</span>: (</span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Monika Szynaka | Pilar Pérez Abellán | Alfonso Ferreira Sarracino | "</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Nestor Echedey Bosch Guerra"</span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Short names used in the identifiers.</span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>PROJECT_CODE <span class="op">=</span> <span class="st">"MBON-P2P"</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>COUNTRY <span class="op">=</span> <span class="st">"Portugal"</span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>COUNTRY_CODE <span class="op">=</span> <span class="st">"PT"</span>          <span class="co"># ISO 3166-1 alpha-2, used in event.countryCode</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>COUNTRY_ID_CODE <span class="op">=</span> <span class="st">"PRT"</span>      <span class="co"># ISO 3166-1 alpha-3, used in the identifiers</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>ISLAND <span class="op">=</span> <span class="st">"Terceira"</span></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>ISLAND_CODE <span class="op">=</span> <span class="st">"TER"</span></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>STATE_PROVINCE <span class="op">=</span> <span class="st">"Azores"</span></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>LOCALITY <span class="op">=</span> <span class="st">"Forte do Negrito"</span></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>SITE_CODE <span class="op">=</span> <span class="st">"FDN"</span></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>STRATA <span class="op">=</span> <span class="st">"MIDTIDE"</span></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>WATER_BODY <span class="op">=</span> <span class="st">"North Atlantic Ocean"</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>HABITAT <span class="op">=</span> <span class="st">"Rocky intertidal, midtide level"</span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>LOCATION_ID <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>PROJECT_CODE<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>COUNTRY_ID_CODE<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>ISLAND_CODE<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>SITE_CODE<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a><span class="co"># The metadata uses the short name "TG-7".</span></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>CAMERA <span class="op">=</span> <span class="st">"OM System Tough TG-7"</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a><span class="co"># The sampling method and the physical quadrat.</span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>POINTS_PER_IMAGE <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>QUADRAT_WIDTH_CM <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>QUADRAT_HEIGHT_CM <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>CAMERA_HEIGHT_CM <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>COORDINATE_UNCERTAINTY_M <span class="op">=</span> <span class="dv">1</span>   <span class="co"># photo events, from the camera GPS</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>PARENT_UNCERTAINTY_M <span class="op">=</span> <span class="dv">500</span>     <span class="co"># full beach, not one photo position</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>SAMPLING_PROTOCOL <span class="op">=</span> (</span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MBON Pole to Pole Rock Shores Intertidal PhotoQuadrat Protocol. "</span></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>    <span class="st">"25 x 25 cm quadrat with camera at 42cm. "</span></span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"100-square intercept grid annotated in CoralNet. "</span></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://repository.oceanbestpractices.org/items/"</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6025a5e9-87b8-46eb-b422-328cb183e658 and "</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://marinebon.org/p2p/"</span></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>GEOREFERENCE_PROTOCOL <span class="op">=</span> <span class="st">"GPS built into the OM System Tough TG-7 camera"</span></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>GEODETIC_DATUM <span class="op">=</span> <span class="st">"WGS84"</span></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a><span class="co"># TAXA</span></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a><span class="co"># One entry for each CoralNet label that becomes an occurrence.</span></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a><span class="co"># label_id = CoralNet label ID, aphia = WoRMS AphiaID.</span></span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>TAXA <span class="op">=</span> {</span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CHLOROPHY"</span>: {</span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"4095"</span>, <span class="st">"name"</span>: <span class="st">"Chlorophyta"</span>, <span class="st">"aphia"</span>: <span class="st">"801"</span>,</span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Pascher, 1914"</span>, <span class="st">"rank"</span>: <span class="st">"phylum"</span>,</span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Plantae"</span>, <span class="st">"phylum"</span>: <span class="st">"Chlorophyta"</span>,</span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">""</span>, <span class="st">"order"</span>: <span class="st">""</span>, <span class="st">"family"</span>: <span class="st">""</span>, <span class="st">"genus"</span>: <span class="st">""</span>,</span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CIRRIPE"</span>: {</span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"2812"</span>, <span class="st">"name"</span>: <span class="st">"Chthamalus stellatus"</span>,</span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>        <span class="st">"aphia"</span>: <span class="st">"106231"</span>, <span class="st">"authorship"</span>: <span class="st">"(Poli, 1791)"</span>, <span class="st">"rank"</span>: <span class="st">"species"</span>,</span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Animalia"</span>, <span class="st">"phylum"</span>: <span class="st">"Arthropoda"</span>,</span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Thecostraca"</span>, <span class="st">"order"</span>: <span class="st">"Balanomorpha"</span>,</span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Chthamalidae"</span>, <span class="st">"genus"</span>: <span class="st">"Chthamalus"</span>,</span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CORALLINA"</span>: {</span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"4721"</span>, <span class="st">"name"</span>: <span class="st">"Corallinaceae"</span>, <span class="st">"aphia"</span>: <span class="st">"143691"</span>,</span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Lamouroux, 1812"</span>, <span class="st">"rank"</span>: <span class="st">"family"</span>,</span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Plantae"</span>, <span class="st">"phylum"</span>: <span class="st">"Rhodophyta"</span>,</span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Florideophyceae"</span>, <span class="st">"order"</span>: <span class="st">"Corallinales"</span>,</span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Corallinaceae"</span>, <span class="st">"genus"</span>: <span class="st">""</span>,</span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RHODO"</span>: {</span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"4081"</span>, <span class="st">"name"</span>: <span class="st">"Rhodophyta"</span>, <span class="st">"aphia"</span>: <span class="st">"852"</span>,</span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Wettstein, 1901"</span>, <span class="st">"rank"</span>: <span class="st">"phylum"</span>,</span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Plantae"</span>, <span class="st">"phylum"</span>: <span class="st">"Rhodophyta"</span>,</span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">""</span>, <span class="st">"order"</span>: <span class="st">""</span>, <span class="st">"family"</span>: <span class="st">""</span>, <span class="st">"genus"</span>: <span class="st">""</span>,</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RVL"</span>: {</span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"11406"</span>, <span class="st">"name"</span>: <span class="st">"Rivularia"</span>, <span class="st">"aphia"</span>: <span class="st">"146623"</span>,</span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"C.Agardh ex Bornet &amp; Flahault, 1886"</span>, <span class="st">"rank"</span>: <span class="st">"genus"</span>,</span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Bacteria"</span>, <span class="st">"phylum"</span>: <span class="st">"Cyanobacteria"</span>,</span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Cyanophyceae"</span>, <span class="st">"order"</span>: <span class="st">"Nostocales"</span>,</span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Rivulariaceae"</span>, <span class="st">"genus"</span>: <span class="st">"Rivularia"</span>,</span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ULVA"</span>: {</span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"584"</span>, <span class="st">"name"</span>: <span class="st">"Ulva"</span>, <span class="st">"aphia"</span>: <span class="st">"144296"</span>,</span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Linnaeus, 1753"</span>, <span class="st">"rank"</span>: <span class="st">"genus"</span>,</span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Plantae"</span>, <span class="st">"phylum"</span>: <span class="st">"Chlorophyta"</span>,</span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Ulvophyceae"</span>, <span class="st">"order"</span>: <span class="st">"Ulvales"</span>,</span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Ulvaceae"</span>, <span class="st">"genus"</span>: <span class="st">"Ulva"</span>,</span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FUCUS"</span>: {</span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"3384"</span>, <span class="st">"name"</span>: <span class="st">"Fucus"</span>, <span class="st">"aphia"</span>: <span class="st">"144129"</span>,</span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Linnaeus, 1753"</span>, <span class="st">"rank"</span>: <span class="st">"genus"</span>,</span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Chromista"</span>, <span class="st">"phylum"</span>: <span class="st">"Ochrophyta"</span>,</span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Phaeophyceae"</span>, <span class="st">"order"</span>: <span class="st">"Fucales"</span>,</span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Fucaceae"</span>, <span class="st">"genus"</span>: <span class="st">"Fucus"</span>,</span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>    <span class="st">"G.griffith"</span>: {</span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"6849"</span>, <span class="st">"name"</span>: <span class="st">"Gymnogongrus griffithsiae"</span>,</span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>        <span class="st">"aphia"</span>: <span class="st">"145657"</span>, <span class="st">"authorship"</span>: <span class="st">"(Turner) C.Martius, 1833"</span>,</span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rank"</span>: <span class="st">"species"</span>, <span class="st">"kingdom"</span>: <span class="st">"Plantae"</span>, <span class="st">"phylum"</span>: <span class="st">"Rhodophyta"</span>,</span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Florideophyceae"</span>, <span class="st">"order"</span>: <span class="st">"Gigartinales"</span>,</span>
+<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Phyllophoraceae"</span>, <span class="st">"genus"</span>: <span class="st">"Gymnogongrus"</span>,</span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LIQYELLLOW"</span>: {</span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"12958"</span>, <span class="st">"name"</span>: <span class="st">"Caloplaca marina"</span>,</span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>        <span class="st">"aphia"</span>: <span class="st">"147724"</span>, <span class="st">"authorship"</span>: <span class="st">"Wedd., 1873"</span>, <span class="st">"rank"</span>: <span class="st">"species"</span>,</span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Fungi"</span>, <span class="st">"phylum"</span>: <span class="st">"Ascomycota"</span>,</span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Lecanoromycetes"</span>, <span class="st">"order"</span>: <span class="st">"Teloschistales"</span>,</span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>        <span class="st">"family"</span>: <span class="st">"Teloschistaceae"</span>, <span class="st">"genus"</span>: <span class="st">"Caloplaca"</span>,</span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gastropod"</span>: {</span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>        <span class="st">"label_id"</span>: <span class="st">"353"</span>, <span class="st">"name"</span>: <span class="st">"Gastropoda"</span>, <span class="st">"aphia"</span>: <span class="st">"101"</span>,</span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>        <span class="st">"authorship"</span>: <span class="st">"Cuvier, 1795"</span>, <span class="st">"rank"</span>: <span class="st">"class"</span>,</span>
+<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a>        <span class="st">"kingdom"</span>: <span class="st">"Animalia"</span>, <span class="st">"phylum"</span>: <span class="st">"Mollusca"</span>,</span>
+<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a>        <span class="st">"class"</span>: <span class="st">"Gastropoda"</span>, <span class="st">"order"</span>: <span class="st">""</span>, <span class="st">"family"</span>: <span class="st">""</span>, <span class="st">"genus"</span>: <span class="st">""</span>,</span>
+<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a><span class="co"># These labels are not taxa, so they are not written as occurrences.</span></span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a>EXCLUDED <span class="op">=</span> {</span>
+<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SC"</span>: <span class="st">"substrate"</span>,</span>
+<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Unc"</span>: <span class="st">"unclear"</span>,</span>
+<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LICHEN"</span>: <span class="st">"lichen (not one taxon)"</span>,</span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a><span class="co"># These are functional groups, not single taxa. They are counted as non-taxon</span></span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a><span class="co"># points until the group agrees on a taxonomic mapping.</span></span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>DEFERRED <span class="op">=</span> {<span class="st">"MAF"</span>: <span class="st">"filamentous macroalgae"</span>, <span class="st">"MAEN"</span>: <span class="st">"encrusting macroalgae"</span>}</span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a><span class="co"># COLUMN ORDER</span></span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a><span class="co"># The same order is used in the CSV files and in meta.xml.</span></span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a>EVENT_COLUMNS <span class="op">=</span> (</span>
+<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a>    <span class="st">"eventID parentEventID eventDate year month day country countryCode "</span></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a>    <span class="st">"stateProvince island locality locationID waterBody habitat "</span></span>
+<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a>    <span class="st">"decimalLatitude decimalLongitude geodeticDatum "</span></span>
+<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coordinateUncertaintyInMeters coordinatePrecision verbatimLatitude "</span></span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a>    <span class="st">"verbatimLongitude georeferenceProtocol locationRemarks samplingProtocol "</span></span>
+<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sampleSizeValue sampleSizeUnit samplingEffort fieldNumber "</span></span>
+<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a>    <span class="st">"eventRemarks"</span></span>
+<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>).split()</span>
+<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a>OCCURRENCE_COLUMNS <span class="op">=</span> (</span>
+<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a>    <span class="st">"occurrenceID eventID scientificName scientificNameID "</span></span>
+<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a>    <span class="st">"scientificNameAuthorship taxonRank kingdom phylum class order family "</span></span>
+<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a>    <span class="st">"genus basisOfRecord occurrenceStatus organismQuantity "</span></span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a>    <span class="st">"organismQuantityType identifiedBy recordedBy identificationRemarks "</span></span>
+<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a>    <span class="st">"occurrenceRemarks"</span></span>
+<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a>).split()</span>
+<span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-207"><a href="#cb16-207" aria-hidden="true" tabindex="-1"></a>EMOF_COLUMNS <span class="op">=</span> (</span>
+<span id="cb16-208"><a href="#cb16-208" aria-hidden="true" tabindex="-1"></a>    <span class="st">"eventID occurrenceID measurementID measurementType measurementTypeID "</span></span>
+<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a>    <span class="st">"measurementValue measurementUnit measurementUnitID measurementMethod "</span></span>
+<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a>    <span class="st">"measurementRemarks"</span></span>
+<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a>).split()</span>
+<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a><span class="co"># SMALL HELPERS</span></span>
+<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_rows(path):</span>
+<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Read a CSV file into a list of dictionaries."""</span></span>
+<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> path.<span class="bu">open</span>(newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> handle:</span>
+<span id="cb16-221"><a href="#cb16-221" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(csv.DictReader(handle))</span>
+<span id="cb16-222"><a href="#cb16-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_rows(rows, columns, path):</span>
+<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Write a list of dictionaries as a CSV file."""</span></span>
+<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> path.<span class="bu">open</span>(<span class="st">"w"</span>, newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> handle:</span>
+<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a>        writer <span class="op">=</span> csv.DictWriter(</span>
+<span id="cb16-228"><a href="#cb16-228" aria-hidden="true" tabindex="-1"></a>            handle,</span>
+<span id="cb16-229"><a href="#cb16-229" aria-hidden="true" tabindex="-1"></a>            fieldnames<span class="op">=</span>columns,</span>
+<span id="cb16-230"><a href="#cb16-230" aria-hidden="true" tabindex="-1"></a>            lineterminator<span class="op">=</span><span class="st">"</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb16-231"><a href="#cb16-231" aria-hidden="true" tabindex="-1"></a>            extrasaction<span class="op">=</span><span class="st">"ignore"</span>,</span>
+<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a>        writer.writeheader()</span>
+<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> rows:</span>
+<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a>            writer.writerow({column: row.get(column, <span class="st">""</span>) <span class="cf">for</span> column <span class="kw">in</span> columns})</span>
+<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-237"><a href="#cb16-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-238"><a href="#cb16-238" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> six(value):</span>
+<span id="cb16-239"><a href="#cb16-239" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Format a latitude or longitude with 6 decimal places."""</span></span>
+<span id="cb16-240"><a href="#cb16-240" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="bu">float</span>(value)<span class="sc">:.6f}</span><span class="ss">"</span></span>
+<span id="cb16-241"><a href="#cb16-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-242"><a href="#cb16-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-243"><a href="#cb16-243" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> survey_id(date):</span>
+<span id="cb16-244"><a href="#cb16-244" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""The identifier shared by the survey event and all its quadrats."""</span></span>
+<span id="cb16-245"><a href="#cb16-245" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">":"</span>.join(</span>
+<span id="cb16-246"><a href="#cb16-246" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a>            PROJECT_CODE,</span>
+<span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a>            date.replace(<span class="st">"-"</span>, <span class="st">""</span>),</span>
+<span id="cb16-249"><a href="#cb16-249" aria-hidden="true" tabindex="-1"></a>            COUNTRY_ID_CODE,</span>
+<span id="cb16-250"><a href="#cb16-250" aria-hidden="true" tabindex="-1"></a>            ISLAND_CODE,</span>
+<span id="cb16-251"><a href="#cb16-251" aria-hidden="true" tabindex="-1"></a>            SITE_CODE,</span>
+<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a>            STRATA,</span>
+<span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-256"><a href="#cb16-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-257"><a href="#cb16-257" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> group_code(group):</span>
+<span id="cb16-258"><a href="#cb16-258" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Turn 'Group_1' into 'G1' for use in an event ID."""</span></span>
+<span id="cb16-259"><a href="#cb16-259" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> group.replace(<span class="st">"Group_"</span>, <span class="st">"G"</span>)</span>
+<span id="cb16-260"><a href="#cb16-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-261"><a href="#cb16-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> frame_from_name(image_name):</span>
+<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Use the last four characters of the image name as the frame code."""</span></span>
+<span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a>    stem <span class="op">=</span> Path(image_name).stem</span>
+<span id="cb16-265"><a href="#cb16-265" aria-hidden="true" tabindex="-1"></a>    frame <span class="op">=</span> stem.split(<span class="st">"_"</span>)[<span class="op">-</span><span class="dv">1</span>][<span class="op">-</span><span class="dv">4</span>:]</span>
+<span id="cb16-266"><a href="#cb16-266" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> frame.isdigit():</span>
+<span id="cb16-267"><a href="#cb16-267" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(<span class="ss">f"Cannot find a 4-digit frame number in </span><span class="sc">{</span>image_name<span class="sc">!r}</span><span class="ss">"</span>)</span>
+<span id="cb16-268"><a href="#cb16-268" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> frame</span>
+<span id="cb16-269"><a href="#cb16-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-270"><a href="#cb16-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-271"><a href="#cb16-271" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> measurement(event_id, occurrence_id, name, mtype, value, unit,</span>
+<span id="cb16-272"><a href="#cb16-272" aria-hidden="true" tabindex="-1"></a>                unit_id<span class="op">=</span><span class="st">""</span>, type_id<span class="op">=</span><span class="st">""</span>, method<span class="op">=</span><span class="st">""</span>, remarks<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb16-273"><a href="#cb16-273" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Build one eMoF row. Empty fields stay empty."""</span></span>
+<span id="cb16-274"><a href="#cb16-274" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb16-275"><a href="#cb16-275" aria-hidden="true" tabindex="-1"></a>        <span class="st">"eventID"</span>: event_id,</span>
+<span id="cb16-276"><a href="#cb16-276" aria-hidden="true" tabindex="-1"></a>        <span class="st">"occurrenceID"</span>: occurrence_id,</span>
+<span id="cb16-277"><a href="#cb16-277" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementID"</span>: <span class="ss">f"</span><span class="sc">{</span>occurrence_id <span class="kw">or</span> event_id<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb16-278"><a href="#cb16-278" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementType"</span>: mtype,</span>
+<span id="cb16-279"><a href="#cb16-279" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementTypeID"</span>: type_id,</span>
+<span id="cb16-280"><a href="#cb16-280" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementValue"</span>: value,</span>
+<span id="cb16-281"><a href="#cb16-281" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementUnit"</span>: unit,</span>
+<span id="cb16-282"><a href="#cb16-282" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementUnitID"</span>: unit_id,</span>
+<span id="cb16-283"><a href="#cb16-283" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementMethod"</span>: method,</span>
+<span id="cb16-284"><a href="#cb16-284" aria-hidden="true" tabindex="-1"></a>        <span class="st">"measurementRemarks"</span>: remarks,</span>
+<span id="cb16-285"><a href="#cb16-285" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb16-286"><a href="#cb16-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-287"><a href="#cb16-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-288"><a href="#cb16-288" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-289"><a href="#cb16-289" aria-hidden="true" tabindex="-1"></a><span class="co"># STEP 1: EVENTS</span></span>
+<span id="cb16-290"><a href="#cb16-290" aria-hidden="true" tabindex="-1"></a><span class="co"># One parent event for the survey, then one child event per photo.</span></span>
+<span id="cb16-291"><a href="#cb16-291" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-292"><a href="#cb16-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-293"><a href="#cb16-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-294"><a href="#cb16-294" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_events(metadata):</span>
+<span id="cb16-295"><a href="#cb16-295" aria-hidden="true" tabindex="-1"></a>    dates <span class="op">=</span> <span class="bu">sorted</span>({row[<span class="st">"Date"</span>] <span class="cf">for</span> row <span class="kw">in</span> metadata})</span>
+<span id="cb16-296"><a href="#cb16-296" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(dates) <span class="op">!=</span> <span class="dv">1</span>:</span>
+<span id="cb16-297"><a href="#cb16-297" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(</span>
+<span id="cb16-298"><a href="#cb16-298" aria-hidden="true" tabindex="-1"></a>            <span class="st">"This script expects one survey date. "</span></span>
+<span id="cb16-299"><a href="#cb16-299" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"Found these dates: </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(dates)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-300"><a href="#cb16-300" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-301"><a href="#cb16-301" aria-hidden="true" tabindex="-1"></a>    date <span class="op">=</span> dates[<span class="dv">0</span>]</span>
+<span id="cb16-302"><a href="#cb16-302" aria-hidden="true" tabindex="-1"></a>    year, month, day <span class="op">=</span> date.split(<span class="st">"-"</span>)</span>
+<span id="cb16-303"><a href="#cb16-303" aria-hidden="true" tabindex="-1"></a>    survey <span class="op">=</span> survey_id(date)</span>
+<span id="cb16-304"><a href="#cb16-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-305"><a href="#cb16-305" aria-hidden="true" tabindex="-1"></a>    groups <span class="op">=</span> <span class="bu">sorted</span>({row[<span class="st">"Group"</span>] <span class="cf">for</span> row <span class="kw">in</span> metadata})</span>
+<span id="cb16-306"><a href="#cb16-306" aria-hidden="true" tabindex="-1"></a>    missing_groups <span class="op">=</span> [group <span class="cf">for</span> group <span class="kw">in</span> groups <span class="cf">if</span> group <span class="kw">not</span> <span class="kw">in</span> RECORDED_BY]</span>
+<span id="cb16-307"><a href="#cb16-307" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> missing_groups:</span>
+<span id="cb16-308"><a href="#cb16-308" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(</span>
+<span id="cb16-309"><a href="#cb16-309" aria-hidden="true" tabindex="-1"></a>            <span class="st">"These field groups do not have a recordedBy string: "</span></span>
+<span id="cb16-310"><a href="#cb16-310" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> <span class="st">", "</span>.join(missing_groups)</span>
+<span id="cb16-311"><a href="#cb16-311" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-312"><a href="#cb16-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-313"><a href="#cb16-313" aria-hidden="true" tabindex="-1"></a>    latitudes <span class="op">=</span> [<span class="bu">float</span>(row[<span class="st">"Latitude"</span>]) <span class="cf">for</span> row <span class="kw">in</span> metadata]</span>
+<span id="cb16-314"><a href="#cb16-314" aria-hidden="true" tabindex="-1"></a>    longitudes <span class="op">=</span> [<span class="bu">float</span>(row[<span class="st">"Longitude"</span>]) <span class="cf">for</span> row <span class="kw">in</span> metadata]</span>
+<span id="cb16-315"><a href="#cb16-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-316"><a href="#cb16-316" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These fields are the same for the parent and the child events.</span></span>
+<span id="cb16-317"><a href="#cb16-317" aria-hidden="true" tabindex="-1"></a>    common <span class="op">=</span> {</span>
+<span id="cb16-318"><a href="#cb16-318" aria-hidden="true" tabindex="-1"></a>        <span class="st">"eventDate"</span>: date, <span class="st">"year"</span>: year, <span class="st">"month"</span>: month, <span class="st">"day"</span>: day,</span>
+<span id="cb16-319"><a href="#cb16-319" aria-hidden="true" tabindex="-1"></a>        <span class="st">"country"</span>: COUNTRY, <span class="st">"countryCode"</span>: COUNTRY_CODE,</span>
+<span id="cb16-320"><a href="#cb16-320" aria-hidden="true" tabindex="-1"></a>        <span class="st">"stateProvince"</span>: STATE_PROVINCE, <span class="st">"island"</span>: ISLAND,</span>
+<span id="cb16-321"><a href="#cb16-321" aria-hidden="true" tabindex="-1"></a>        <span class="st">"locality"</span>: LOCALITY, <span class="st">"locationID"</span>: LOCATION_ID,</span>
+<span id="cb16-322"><a href="#cb16-322" aria-hidden="true" tabindex="-1"></a>        <span class="st">"waterBody"</span>: WATER_BODY, <span class="st">"habitat"</span>: HABITAT,</span>
+<span id="cb16-323"><a href="#cb16-323" aria-hidden="true" tabindex="-1"></a>        <span class="st">"geodeticDatum"</span>: GEODETIC_DATUM,</span>
+<span id="cb16-324"><a href="#cb16-324" aria-hidden="true" tabindex="-1"></a>        <span class="st">"georeferenceProtocol"</span>: GEOREFERENCE_PROTOCOL,</span>
+<span id="cb16-325"><a href="#cb16-325" aria-hidden="true" tabindex="-1"></a>        <span class="st">"samplingProtocol"</span>: SAMPLING_PROTOCOL,</span>
+<span id="cb16-326"><a href="#cb16-326" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb16-327"><a href="#cb16-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The parent event is a summary of the whole survey.</span></span>
+<span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a>    events <span class="op">=</span> [{</span>
+<span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>common,</span>
+<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a>        <span class="st">"eventID"</span>: survey,</span>
+<span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a>        <span class="st">"parentEventID"</span>: <span class="st">""</span>,</span>
+<span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a>        <span class="st">"decimalLatitude"</span>: six(<span class="bu">sum</span>(latitudes) <span class="op">/</span> <span class="bu">len</span>(latitudes)),</span>
+<span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a>        <span class="st">"decimalLongitude"</span>: six(<span class="bu">sum</span>(longitudes) <span class="op">/</span> <span class="bu">len</span>(longitudes)),</span>
+<span id="cb16-335"><a href="#cb16-335" aria-hidden="true" tabindex="-1"></a>        <span class="st">"coordinateUncertaintyInMeters"</span>: <span class="bu">str</span>(PARENT_UNCERTAINTY_M),</span>
+<span id="cb16-336"><a href="#cb16-336" aria-hidden="true" tabindex="-1"></a>        <span class="st">"coordinatePrecision"</span>: <span class="st">"0.000001"</span>,</span>
+<span id="cb16-337"><a href="#cb16-337" aria-hidden="true" tabindex="-1"></a>        <span class="st">"verbatimLatitude"</span>: <span class="st">""</span>,</span>
+<span id="cb16-338"><a href="#cb16-338" aria-hidden="true" tabindex="-1"></a>        <span class="st">"verbatimLongitude"</span>: <span class="st">""</span>,</span>
+<span id="cb16-339"><a href="#cb16-339" aria-hidden="true" tabindex="-1"></a>        <span class="st">"locationRemarks"</span>: (</span>
+<span id="cb16-340"><a href="#cb16-340" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Coordinates are the centre of the child photoquadrats. "</span></span>
+<span id="cb16-341"><a href="#cb16-341" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Each child event has its own camera position."</span></span>
+<span id="cb16-342"><a href="#cb16-342" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb16-343"><a href="#cb16-343" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sampleSizeValue"</span>: <span class="bu">str</span>(<span class="bu">len</span>(metadata)),</span>
+<span id="cb16-344"><a href="#cb16-344" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sampleSizeUnit"</span>: <span class="st">"quadrats"</span>,</span>
+<span id="cb16-345"><a href="#cb16-345" aria-hidden="true" tabindex="-1"></a>        <span class="st">"samplingEffort"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(metadata)<span class="sc">}</span><span class="ss"> photoquadrats"</span>,</span>
+<span id="cb16-346"><a href="#cb16-346" aria-hidden="true" tabindex="-1"></a>        <span class="st">"fieldNumber"</span>: <span class="st">""</span>,</span>
+<span id="cb16-347"><a href="#cb16-347" aria-hidden="true" tabindex="-1"></a>        <span class="st">"eventRemarks"</span>: (</span>
+<span id="cb16-348"><a href="#cb16-348" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"One survey event with </span><span class="sc">{</span><span class="bu">len</span>(metadata)<span class="sc">}</span><span class="ss"> photoquadrats. "</span></span>
+<span id="cb16-349"><a href="#cb16-349" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Sampled above water; depth not recorded."</span></span>
+<span id="cb16-350"><a href="#cb16-350" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb16-351"><a href="#cb16-351" aria-hidden="true" tabindex="-1"></a>    }]</span>
+<span id="cb16-352"><a href="#cb16-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-353"><a href="#cb16-353" aria-hidden="true" tabindex="-1"></a>    image_events <span class="op">=</span> {}</span>
+<span id="cb16-354"><a href="#cb16-354" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> metadata:</span>
+<span id="cb16-355"><a href="#cb16-355" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> row[<span class="st">"Name"</span>]</span>
+<span id="cb16-356"><a href="#cb16-356" aria-hidden="true" tabindex="-1"></a>        event_id <span class="op">=</span> (</span>
+<span id="cb16-357"><a href="#cb16-357" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>survey<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>group_code(row[<span class="st">'Group'</span>])<span class="sc">}</span><span class="ss">:IMG</span><span class="sc">{</span>frame_from_name(image)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-359"><a href="#cb16-359" aria-hidden="true" tabindex="-1"></a>        image_events[image] <span class="op">=</span> event_id</span>
+<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> row.get(<span class="st">"Height (cm)"</span>) <span class="kw">or</span> <span class="bu">str</span>(CAMERA_HEIGHT_CM)</span>
+<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a>        events.append({</span>
+<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a>            <span class="op">**</span>common,</span>
+<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a>            <span class="st">"eventID"</span>: event_id,</span>
+<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parentEventID"</span>: survey,</span>
+<span id="cb16-365"><a href="#cb16-365" aria-hidden="true" tabindex="-1"></a>            <span class="st">"decimalLatitude"</span>: six(row[<span class="st">"Latitude"</span>]),</span>
+<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a>            <span class="st">"decimalLongitude"</span>: six(row[<span class="st">"Longitude"</span>]),</span>
+<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a>            <span class="st">"coordinateUncertaintyInMeters"</span>: <span class="bu">str</span>(COORDINATE_UNCERTAINTY_M),</span>
+<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a>            <span class="st">"coordinatePrecision"</span>: <span class="st">"0.000001"</span>,</span>
+<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a>            <span class="st">"verbatimLatitude"</span>: row[<span class="st">"Latitude"</span>],</span>
+<span id="cb16-370"><a href="#cb16-370" aria-hidden="true" tabindex="-1"></a>            <span class="st">"verbatimLongitude"</span>: row[<span class="st">"Longitude"</span>],</span>
+<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a>            <span class="st">"locationRemarks"</span>: <span class="st">""</span>,</span>
+<span id="cb16-372"><a href="#cb16-372" aria-hidden="true" tabindex="-1"></a>            <span class="st">"sampleSizeValue"</span>: <span class="bu">str</span>(POINTS_PER_IMAGE),</span>
+<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a>            <span class="st">"sampleSizeUnit"</span>: <span class="st">"points"</span>,</span>
+<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a>            <span class="st">"samplingEffort"</span>: <span class="ss">f"</span><span class="sc">{</span>POINTS_PER_IMAGE<span class="sc">}</span><span class="ss"> points"</span>,</span>
+<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a>            <span class="st">"fieldNumber"</span>: image,</span>
+<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a>            <span class="st">"eventRemarks"</span>: (</span>
+<span id="cb16-377"><a href="#cb16-377" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"Photoquadrat </span><span class="sc">{</span>image<span class="sc">}</span><span class="ss">; camera height </span><span class="sc">{</span>height<span class="sc">}</span><span class="ss"> cm; "</span></span>
+<span id="cb16-378"><a href="#cb16-378" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"camera </span><span class="sc">{</span>CAMERA<span class="sc">}</span><span class="ss">; "</span></span>
+<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"field group </span><span class="sc">{</span>row<span class="sc">.</span>get(<span class="st">'Group'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ss">; "</span></span>
+<span id="cb16-380"><a href="#cb16-380" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"strobes </span><span class="sc">{</span>row<span class="sc">.</span>get(<span class="st">'Strobes'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ss">; "</span></span>
+<span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"comment: </span><span class="sc">{</span>row<span class="sc">.</span>get(<span class="st">'Comments'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ss">. "</span></span>
+<span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Sampled above water; depth not recorded."</span></span>
+<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> events, image_events</span>
+<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a><span class="co"># STEP 2: OCCURRENCES</span></span>
+<span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a><span class="co"># One occurrence for each taxon found in each photo.</span></span>
+<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_occurrences(annotations, image_events, metadata):</span>
+<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a>    total_points <span class="op">=</span> {}</span>
+<span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> annotations:</span>
+<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a>        total_points[row[<span class="st">"Name"</span>]] <span class="op">=</span> total_points.get(row[<span class="st">"Name"</span>], <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> image, total <span class="kw">in</span> total_points.items():</span>
+<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> total <span class="op">!=</span> POINTS_PER_IMAGE:</span>
+<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">SystemExit</span>(</span>
+<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>image<span class="sc">}</span><span class="ss"> has </span><span class="sc">{</span>total<span class="sc">}</span><span class="ss"> points, but the script expects "</span></span>
+<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>POINTS_PER_IMAGE<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a>    known <span class="op">=</span> <span class="bu">set</span>(TAXA) <span class="op">|</span> <span class="bu">set</span>(EXCLUDED) <span class="op">|</span> <span class="bu">set</span>(DEFERRED)</span>
+<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a>    unknown <span class="op">=</span> <span class="bu">sorted</span>({row[<span class="st">"Label code"</span>] <span class="cf">for</span> row <span class="kw">in</span> annotations} <span class="op">-</span> known)</span>
+<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> unknown:</span>
+<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(</span>
+<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>            <span class="st">"These CoralNet labels are not in the script: "</span> <span class="op">+</span> <span class="st">", "</span>.join(unknown)</span>
+<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check that each label ID still belongs to the expected code.</span></span>
+<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> annotations:</span>
+<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a>        code <span class="op">=</span> row[<span class="st">"Label code"</span>]</span>
+<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> code <span class="kw">in</span> TAXA <span class="kw">and</span> row[<span class="st">"Label ID"</span>] <span class="op">!=</span> TAXA[code][<span class="st">"label_id"</span>]:</span>
+<span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">SystemExit</span>(</span>
+<span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"Label </span><span class="sc">{</span>code<span class="sc">}</span><span class="ss"> has ID </span><span class="sc">{</span>row[<span class="st">'Label ID'</span>]<span class="sc">}</span><span class="ss">, "</span></span>
+<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"but the script expects </span><span class="sc">{</span>TAXA[code][<span class="st">'label_id'</span>]<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb16-421"><a href="#cb16-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Group the points by image and label.</span></span>
+<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>    groups <span class="op">=</span> {}</span>
+<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> annotations:</span>
+<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>        key <span class="op">=</span> (row[<span class="st">"Name"</span>], row[<span class="st">"Label code"</span>])</span>
+<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a>        groups.setdefault(key, []).append(row)</span>
+<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a>    metadata_by_image <span class="op">=</span> {row[<span class="st">"Name"</span>]: row <span class="cf">for</span> row <span class="kw">in</span> metadata}</span>
+<span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a>    image_order <span class="op">=</span> {row[<span class="st">"Name"</span>]: index <span class="cf">for</span> index, row <span class="kw">in</span> <span class="bu">enumerate</span>(metadata)}</span>
+<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a>    taxon_order <span class="op">=</span> {code: index <span class="cf">for</span> index, code <span class="kw">in</span> <span class="bu">enumerate</span>(TAXA)}</span>
+<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a>    ordered_keys <span class="op">=</span> <span class="bu">sorted</span>(</span>
+<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a>        groups,</span>
+<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a>        key<span class="op">=</span><span class="kw">lambda</span> key: (image_order[key[<span class="dv">0</span>]], taxon_order.get(key[<span class="dv">1</span>], <span class="dv">99</span>), key[<span class="dv">1</span>]),</span>
+<span id="cb16-434"><a href="#cb16-434" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-435"><a href="#cb16-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a>    occurrences <span class="op">=</span> []</span>
+<span id="cb16-437"><a href="#cb16-437" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> image, code <span class="kw">in</span> ordered_keys:</span>
+<span id="cb16-438"><a href="#cb16-438" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> code <span class="kw">not</span> <span class="kw">in</span> TAXA:</span>
+<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a>        taxon <span class="op">=</span> TAXA[code]</span>
+<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a>        rows <span class="op">=</span> groups[(image, code)]</span>
+<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a>        points <span class="op">=</span> <span class="bu">len</span>(rows)</span>
+<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a>        machine <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> row <span class="kw">in</span> rows <span class="cf">if</span> row[<span class="st">"Annotator"</span>] <span class="op">==</span> <span class="st">"robot"</span>)</span>
+<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a>        human <span class="op">=</span> points <span class="op">-</span> machine</span>
+<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a>        annotators <span class="op">=</span> <span class="bu">sorted</span>({</span>
+<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a>            (</span>
+<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a>                <span class="st">"CoralNet machine learning annotator"</span></span>
+<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> row[<span class="st">"Annotator"</span>] <span class="op">==</span> <span class="st">"robot"</span></span>
+<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span> row[<span class="st">"Annotator"</span>]</span>
+<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> row <span class="kw">in</span> rows</span>
+<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> total_points[image]</span>
+<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a>        percent <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>points <span class="op">/</span> total <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">"</span></span>
+<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a>        event_id <span class="op">=</span> image_events[image]</span>
+<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a>        occurrence_id <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>event_id<span class="sc">}</span><span class="ss">:aphia-</span><span class="sc">{</span>taxon[<span class="st">'aphia'</span>]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a>        group <span class="op">=</span> metadata_by_image[image][<span class="st">"Group"</span>]</span>
+<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a>        recorded_by <span class="op">=</span> RECORDED_BY[group]</span>
+<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-461"><a href="#cb16-461" aria-hidden="true" tabindex="-1"></a>        occurrences.append({</span>
+<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a>            <span class="st">"occurrenceID"</span>: occurrence_id,</span>
+<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a>            <span class="st">"eventID"</span>: event_id,</span>
+<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a>            <span class="st">"scientificName"</span>: taxon[<span class="st">"name"</span>],</span>
+<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a>            <span class="st">"scientificNameID"</span>: (</span>
+<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a>                <span class="st">"urn:lsid:marinespecies.org:taxname:"</span> <span class="op">+</span> taxon[<span class="st">"aphia"</span>]</span>
+<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a>            <span class="st">"scientificNameAuthorship"</span>: taxon[<span class="st">"authorship"</span>],</span>
+<span id="cb16-469"><a href="#cb16-469" aria-hidden="true" tabindex="-1"></a>            <span class="st">"taxonRank"</span>: taxon[<span class="st">"rank"</span>],</span>
+<span id="cb16-470"><a href="#cb16-470" aria-hidden="true" tabindex="-1"></a>            <span class="st">"kingdom"</span>: taxon[<span class="st">"kingdom"</span>],</span>
+<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a>            <span class="st">"phylum"</span>: taxon[<span class="st">"phylum"</span>],</span>
+<span id="cb16-472"><a href="#cb16-472" aria-hidden="true" tabindex="-1"></a>            <span class="st">"class"</span>: taxon[<span class="st">"class"</span>],</span>
+<span id="cb16-473"><a href="#cb16-473" aria-hidden="true" tabindex="-1"></a>            <span class="st">"order"</span>: taxon[<span class="st">"order"</span>],</span>
+<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a>            <span class="st">"family"</span>: taxon[<span class="st">"family"</span>],</span>
+<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a>            <span class="st">"genus"</span>: taxon[<span class="st">"genus"</span>],</span>
+<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a>            <span class="st">"basisOfRecord"</span>: (</span>
+<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a>                <span class="st">"MachineObservation"</span> <span class="cf">if</span> machine <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"HumanObservation"</span></span>
+<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>            <span class="st">"occurrenceStatus"</span>: <span class="st">"detected"</span>,</span>
+<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a>            <span class="st">"organismQuantity"</span>: percent,</span>
+<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a>            <span class="st">"organismQuantityType"</span>: <span class="st">"percent cover"</span>,</span>
+<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a>            <span class="st">"identifiedBy"</span>: <span class="st">"|"</span>.join(annotators),</span>
+<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a>            <span class="st">"recordedBy"</span>: recorded_by,</span>
+<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a>            <span class="st">"identificationRemarks"</span>: (</span>
+<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"CoralNet label </span><span class="sc">{</span>code<span class="sc">}</span><span class="ss"> (ID </span><span class="sc">{</span>taxon[<span class="st">'label_id'</span>]<span class="sc">}</span><span class="ss">); "</span></span>
+<span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>points<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span>total<span class="sc">}</span><span class="ss"> points; "</span></span>
+<span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>machine<span class="sc">}</span><span class="ss"> machine and </span><span class="sc">{</span>human<span class="sc">}</span><span class="ss"> human annotations."</span></span>
+<span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a>            <span class="st">"occurrenceRemarks"</span>: (</span>
+<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>percent<span class="sc">}</span><span class="ss">% cover from </span><span class="sc">{</span>points<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span>total<span class="sc">}</span><span class="ss"> grid points."</span></span>
+<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> occurrences</span>
+<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a><span class="co"># STEP 3: MEASUREMENTS</span></span>
+<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a><span class="co"># Three measurements per photo, then four measurements per occurrence.</span></span>
+<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_emof(annotations, events, occurrences):</span>
+<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> {}</span>
+<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a>    machine_counts <span class="op">=</span> {}</span>
+<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> annotations:</span>
+<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a>        key <span class="op">=</span> (row[<span class="st">"Name"</span>], row[<span class="st">"Label code"</span>])</span>
+<span id="cb16-508"><a href="#cb16-508" aria-hidden="true" tabindex="-1"></a>        counts[key] <span class="op">=</span> counts.get(key, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> row[<span class="st">"Annotator"</span>] <span class="op">==</span> <span class="st">"robot"</span>:</span>
+<span id="cb16-510"><a href="#cb16-510" aria-hidden="true" tabindex="-1"></a>            machine_counts[key] <span class="op">=</span> machine_counts.get(key, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb16-511"><a href="#cb16-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-512"><a href="#cb16-512" aria-hidden="true" tabindex="-1"></a>    aphia_to_code <span class="op">=</span> {taxon[<span class="st">"aphia"</span>]: code <span class="cf">for</span> code, taxon <span class="kw">in</span> TAXA.items()}</span>
+<span id="cb16-513"><a href="#cb16-513" aria-hidden="true" tabindex="-1"></a>    excluded_codes <span class="op">=</span> <span class="bu">set</span>(EXCLUDED) <span class="op">|</span> <span class="bu">set</span>(DEFERRED)</span>
+<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb16-515"><a href="#cb16-515" aria-hidden="true" tabindex="-1"></a>    counts_unit <span class="op">=</span> <span class="st">"http://vocab.nerc.ac.uk/collection/P06/current/UCNT/"</span></span>
+<span id="cb16-516"><a href="#cb16-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-517"><a href="#cb16-517" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> event <span class="kw">in</span> events:</span>
+<span id="cb16-518"><a href="#cb16-518" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> event[<span class="st">"sampleSizeUnit"</span>] <span class="op">!=</span> <span class="st">"points"</span>:</span>
+<span id="cb16-519"><a href="#cb16-519" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb16-520"><a href="#cb16-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-521"><a href="#cb16-521" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> event[<span class="st">"fieldNumber"</span>]</span>
+<span id="cb16-522"><a href="#cb16-522" aria-hidden="true" tabindex="-1"></a>        event_id <span class="op">=</span> event[<span class="st">"eventID"</span>]</span>
+<span id="cb16-523"><a href="#cb16-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-524"><a href="#cb16-524" aria-hidden="true" tabindex="-1"></a>        <span class="co"># How many points are not mapped to a taxon?</span></span>
+<span id="cb16-525"><a href="#cb16-525" aria-hidden="true" tabindex="-1"></a>        excluded_total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb16-526"><a href="#cb16-526" aria-hidden="true" tabindex="-1"></a>        parts <span class="op">=</span> []</span>
+<span id="cb16-527"><a href="#cb16-527" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> code <span class="kw">in</span> <span class="bu">sorted</span>(excluded_codes):</span>
+<span id="cb16-528"><a href="#cb16-528" aria-hidden="true" tabindex="-1"></a>            count <span class="op">=</span> counts.get((image, code), <span class="dv">0</span>)</span>
+<span id="cb16-529"><a href="#cb16-529" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> count <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb16-530"><a href="#cb16-530" aria-hidden="true" tabindex="-1"></a>                excluded_total <span class="op">+=</span> count</span>
+<span id="cb16-531"><a href="#cb16-531" aria-hidden="true" tabindex="-1"></a>                parts.append(<span class="ss">f"</span><span class="sc">{</span>code<span class="sc">}</span><span class="ss">=</span><span class="sc">{</span>count<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-532"><a href="#cb16-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-533"><a href="#cb16-533" aria-hidden="true" tabindex="-1"></a>        area <span class="op">=</span> QUADRAT_WIDTH_CM <span class="op">*</span> QUADRAT_HEIGHT_CM <span class="op">/</span> <span class="dv">10000</span></span>
+<span id="cb16-534"><a href="#cb16-534" aria-hidden="true" tabindex="-1"></a>        rows.append(measurement(</span>
+<span id="cb16-535"><a href="#cb16-535" aria-hidden="true" tabindex="-1"></a>            event_id, <span class="st">""</span>, <span class="st">"quadrat-area"</span>, <span class="st">"quadrat area"</span>,</span>
+<span id="cb16-536"><a href="#cb16-536" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>area<span class="sc">:.4f}</span><span class="ss">"</span>, <span class="st">"square metres"</span>,</span>
+<span id="cb16-537"><a href="#cb16-537" aria-hidden="true" tabindex="-1"></a>            <span class="st">"http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"</span>,</span>
+<span id="cb16-538"><a href="#cb16-538" aria-hidden="true" tabindex="-1"></a>            method<span class="op">=</span>(</span>
+<span id="cb16-539"><a href="#cb16-539" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>QUADRAT_WIDTH_CM<span class="sc">}</span><span class="ss"> x </span><span class="sc">{</span>QUADRAT_HEIGHT_CM<span class="sc">}</span><span class="ss"> cm quadrat "</span></span>
+<span id="cb16-540"><a href="#cb16-540" aria-hidden="true" tabindex="-1"></a>                <span class="st">"specified by the MBON Pole to Pole protocol"</span></span>
+<span id="cb16-541"><a href="#cb16-541" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-542"><a href="#cb16-542" aria-hidden="true" tabindex="-1"></a>        ))</span>
+<span id="cb16-543"><a href="#cb16-543" aria-hidden="true" tabindex="-1"></a>        rows.append(measurement(</span>
+<span id="cb16-544"><a href="#cb16-544" aria-hidden="true" tabindex="-1"></a>            event_id, <span class="st">""</span>, <span class="st">"camera-height"</span>, <span class="st">"camera height above substrate"</span>,</span>
+<span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a>            <span class="bu">str</span>(CAMERA_HEIGHT_CM), <span class="st">"centimetres"</span>,</span>
+<span id="cb16-546"><a href="#cb16-546" aria-hidden="true" tabindex="-1"></a>            method<span class="op">=</span><span class="st">"Fixed camera mount specified by the protocol"</span>,</span>
+<span id="cb16-547"><a href="#cb16-547" aria-hidden="true" tabindex="-1"></a>        ))</span>
+<span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a>        rows.append(measurement(</span>
+<span id="cb16-549"><a href="#cb16-549" aria-hidden="true" tabindex="-1"></a>            event_id, <span class="st">""</span>, <span class="st">"excluded-points"</span>,</span>
+<span id="cb16-550"><a href="#cb16-550" aria-hidden="true" tabindex="-1"></a>            <span class="st">"number of points classified as non-taxon"</span>,</span>
+<span id="cb16-551"><a href="#cb16-551" aria-hidden="true" tabindex="-1"></a>            <span class="bu">str</span>(excluded_total), <span class="st">"counts"</span>, counts_unit,</span>
+<span id="cb16-552"><a href="#cb16-552" aria-hidden="true" tabindex="-1"></a>            method<span class="op">=</span>(</span>
+<span id="cb16-553"><a href="#cb16-553" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Count of grid points assigned to labels that are not mapped "</span></span>
+<span id="cb16-554"><a href="#cb16-554" aria-hidden="true" tabindex="-1"></a>                <span class="st">"to a taxon (substrate, unclear, lichen, or deferred "</span></span>
+<span id="cb16-555"><a href="#cb16-555" aria-hidden="true" tabindex="-1"></a>                <span class="st">"macroalgae)"</span></span>
+<span id="cb16-556"><a href="#cb16-556" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb16-557"><a href="#cb16-557" aria-hidden="true" tabindex="-1"></a>            remarks<span class="op">=</span><span class="st">"; "</span>.join(parts),</span>
+<span id="cb16-558"><a href="#cb16-558" aria-hidden="true" tabindex="-1"></a>        ))</span>
+<span id="cb16-559"><a href="#cb16-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-560"><a href="#cb16-560" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> occurrence <span class="kw">in</span> occurrences:</span>
+<span id="cb16-561"><a href="#cb16-561" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> occurrence[<span class="st">"eventID"</span>] <span class="op">!=</span> event_id:</span>
+<span id="cb16-562"><a href="#cb16-562" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb16-563"><a href="#cb16-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-564"><a href="#cb16-564" aria-hidden="true" tabindex="-1"></a>            aphia <span class="op">=</span> occurrence[<span class="st">"scientificNameID"</span>].rsplit(<span class="st">":"</span>, <span class="dv">1</span>)[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb16-565"><a href="#cb16-565" aria-hidden="true" tabindex="-1"></a>            code <span class="op">=</span> aphia_to_code[aphia]</span>
+<span id="cb16-566"><a href="#cb16-566" aria-hidden="true" tabindex="-1"></a>            points <span class="op">=</span> counts.get((image, code), <span class="dv">0</span>)</span>
+<span id="cb16-567"><a href="#cb16-567" aria-hidden="true" tabindex="-1"></a>            machine <span class="op">=</span> machine_counts.get((image, code), <span class="dv">0</span>)</span>
+<span id="cb16-568"><a href="#cb16-568" aria-hidden="true" tabindex="-1"></a>            human <span class="op">=</span> points <span class="op">-</span> machine</span>
+<span id="cb16-569"><a href="#cb16-569" aria-hidden="true" tabindex="-1"></a>            percent <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>points <span class="op">/</span> POINTS_PER_IMAGE <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">"</span></span>
+<span id="cb16-570"><a href="#cb16-570" aria-hidden="true" tabindex="-1"></a>            occurrence_id <span class="op">=</span> occurrence[<span class="st">"occurrenceID"</span>]</span>
+<span id="cb16-571"><a href="#cb16-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-572"><a href="#cb16-572" aria-hidden="true" tabindex="-1"></a>            rows.append(measurement(</span>
+<span id="cb16-573"><a href="#cb16-573" aria-hidden="true" tabindex="-1"></a>                event_id, occurrence_id, <span class="st">"percent-cover"</span>, <span class="st">"percent cover"</span>,</span>
+<span id="cb16-574"><a href="#cb16-574" aria-hidden="true" tabindex="-1"></a>                percent, <span class="st">"percent"</span>,</span>
+<span id="cb16-575"><a href="#cb16-575" aria-hidden="true" tabindex="-1"></a>                <span class="st">"http://vocab.nerc.ac.uk/collection/P06/current/UPCT/"</span>,</span>
+<span id="cb16-576"><a href="#cb16-576" aria-hidden="true" tabindex="-1"></a>                <span class="st">"http://vocab.nerc.ac.uk/collection/P01/current/PCOVRCK1/"</span>,</span>
+<span id="cb16-577"><a href="#cb16-577" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Point intercept on a 100-point grid; percent cover = "</span></span>
+<span id="cb16-578"><a href="#cb16-578" aria-hidden="true" tabindex="-1"></a>                <span class="st">"points assigned to the taxon / total points x 100"</span>,</span>
+<span id="cb16-579"><a href="#cb16-579" aria-hidden="true" tabindex="-1"></a>            ))</span>
+<span id="cb16-580"><a href="#cb16-580" aria-hidden="true" tabindex="-1"></a>            rows.append(measurement(</span>
+<span id="cb16-581"><a href="#cb16-581" aria-hidden="true" tabindex="-1"></a>                event_id, occurrence_id, <span class="st">"points"</span>, <span class="st">"number of points"</span>,</span>
+<span id="cb16-582"><a href="#cb16-582" aria-hidden="true" tabindex="-1"></a>                <span class="bu">str</span>(points), <span class="st">"counts"</span>, counts_unit,</span>
+<span id="cb16-583"><a href="#cb16-583" aria-hidden="true" tabindex="-1"></a>                method<span class="op">=</span><span class="st">"Count of grid points assigned to the label in CoralNet"</span>,</span>
+<span id="cb16-584"><a href="#cb16-584" aria-hidden="true" tabindex="-1"></a>            ))</span>
+<span id="cb16-585"><a href="#cb16-585" aria-hidden="true" tabindex="-1"></a>            rows.append(measurement(</span>
+<span id="cb16-586"><a href="#cb16-586" aria-hidden="true" tabindex="-1"></a>                event_id, occurrence_id, <span class="st">"machine-points"</span>,</span>
+<span id="cb16-587"><a href="#cb16-587" aria-hidden="true" tabindex="-1"></a>                <span class="st">"machine-annotated points"</span>,</span>
+<span id="cb16-588"><a href="#cb16-588" aria-hidden="true" tabindex="-1"></a>                <span class="bu">str</span>(machine), <span class="st">"counts"</span>, counts_unit,</span>
+<span id="cb16-589"><a href="#cb16-589" aria-hidden="true" tabindex="-1"></a>                method<span class="op">=</span>(</span>
+<span id="cb16-590"><a href="#cb16-590" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Count of points whose CoralNet annotator is the "</span></span>
+<span id="cb16-591"><a href="#cb16-591" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"automated classifier"</span></span>
+<span id="cb16-592"><a href="#cb16-592" aria-hidden="true" tabindex="-1"></a>                ),</span>
+<span id="cb16-593"><a href="#cb16-593" aria-hidden="true" tabindex="-1"></a>            ))</span>
+<span id="cb16-594"><a href="#cb16-594" aria-hidden="true" tabindex="-1"></a>            rows.append(measurement(</span>
+<span id="cb16-595"><a href="#cb16-595" aria-hidden="true" tabindex="-1"></a>                event_id, occurrence_id, <span class="st">"human-points"</span>,</span>
+<span id="cb16-596"><a href="#cb16-596" aria-hidden="true" tabindex="-1"></a>                <span class="st">"human-annotated points"</span>,</span>
+<span id="cb16-597"><a href="#cb16-597" aria-hidden="true" tabindex="-1"></a>                <span class="bu">str</span>(human), <span class="st">"counts"</span>, counts_unit,</span>
+<span id="cb16-598"><a href="#cb16-598" aria-hidden="true" tabindex="-1"></a>                method<span class="op">=</span><span class="st">"Count of points annotated by a person in CoralNet"</span>,</span>
+<span id="cb16-599"><a href="#cb16-599" aria-hidden="true" tabindex="-1"></a>            ))</span>
+<span id="cb16-600"><a href="#cb16-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-601"><a href="#cb16-601" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span>
+<span id="cb16-602"><a href="#cb16-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-603"><a href="#cb16-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-604"><a href="#cb16-604" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-605"><a href="#cb16-605" aria-hidden="true" tabindex="-1"></a><span class="co"># STEP 4: WRITE THE ARCHIVE</span></span>
+<span id="cb16-606"><a href="#cb16-606" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb16-607"><a href="#cb16-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-608"><a href="#cb16-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-609"><a href="#cb16-609" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_meta_xml():</span>
+<span id="cb16-610"><a href="#cb16-610" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Write the Darwin Core Archive descriptor."""</span></span>
+<span id="cb16-611"><a href="#cb16-611" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fields(columns):</span>
+<span id="cb16-612"><a href="#cb16-612" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(</span>
+<span id="cb16-613"><a href="#cb16-613" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f'    &lt;field index="</span><span class="sc">{</span>index<span class="sc">}</span><span class="ss">" '</span></span>
+<span id="cb16-614"><a href="#cb16-614" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f'term="http://rs.tdwg.org/dwc/terms/</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">" /&gt;'</span></span>
+<span id="cb16-615"><a href="#cb16-615" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> index, name <span class="kw">in</span> <span class="bu">enumerate</span>(columns)</span>
+<span id="cb16-616"><a href="#cb16-616" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-617"><a href="#cb16-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-618"><a href="#cb16-618" aria-hidden="true" tabindex="-1"></a>    xml <span class="op">=</span> <span class="ss">f"""&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span>
+<span id="cb16-619"><a href="#cb16-619" aria-hidden="true" tabindex="-1"></a><span class="ss">&lt;archive xmlns="http://rs.tdwg.org/dwc/text/"&gt;</span></span>
+<span id="cb16-620"><a href="#cb16-620" aria-hidden="true" tabindex="-1"></a><span class="ss">  &lt;core encoding="UTF-8" fieldsTerminatedBy="," linesTerminatedBy="&amp;#10;" fieldsEnclosedBy="&amp;quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/Event"&gt;</span></span>
+<span id="cb16-621"><a href="#cb16-621" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;files&gt;&lt;location&gt;event.csv&lt;/location&gt;&lt;/files&gt;</span></span>
+<span id="cb16-622"><a href="#cb16-622" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;id index="0" /&gt;</span></span>
+<span id="cb16-623"><a href="#cb16-623" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>fields(EVENT_COLUMNS)<span class="sc">}</span></span>
+<span id="cb16-624"><a href="#cb16-624" aria-hidden="true" tabindex="-1"></a><span class="ss">  &lt;/core&gt;</span></span>
+<span id="cb16-625"><a href="#cb16-625" aria-hidden="true" tabindex="-1"></a><span class="ss">  &lt;extension encoding="UTF-8" fieldsTerminatedBy="," linesTerminatedBy="&amp;#10;" fieldsEnclosedBy="&amp;quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/Occurrence"&gt;</span></span>
+<span id="cb16-626"><a href="#cb16-626" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;files&gt;&lt;location&gt;occurrence.csv&lt;/location&gt;&lt;/files&gt;</span></span>
+<span id="cb16-627"><a href="#cb16-627" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;coreid index="1" /&gt;</span></span>
+<span id="cb16-628"><a href="#cb16-628" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>fields(OCCURRENCE_COLUMNS)<span class="sc">}</span></span>
+<span id="cb16-629"><a href="#cb16-629" aria-hidden="true" tabindex="-1"></a><span class="ss">  &lt;/extension&gt;</span></span>
+<span id="cb16-630"><a href="#cb16-630" aria-hidden="true" tabindex="-1"></a><span class="ss">  &lt;extension encoding="UTF-8" fieldsTerminatedBy="," linesTerminatedBy="&amp;#10;" fieldsEnclosedBy="&amp;quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/MeasurementOrFact"&gt;</span></span>
+<span id="cb16-631"><a href="#cb16-631" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;files&gt;&lt;location&gt;extendedmeasurementorfact.csv&lt;/location&gt;&lt;/files&gt;</span></span>
+<span id="cb16-632"><a href="#cb16-632" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;coreid index="0" /&gt;</span></span>
+<span id="cb16-633"><a href="#cb16-633" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>fields(EMOF_COLUMNS)<span class="sc">}</span></span>
+<span id="cb16-634"><a href="#cb16-634" aria-hidden="true" tabindex="-1"></a><span class="ss">  &lt;/extension&gt;</span></span>
+<span id="cb16-635"><a href="#cb16-635" aria-hidden="true" tabindex="-1"></a><span class="ss">&lt;/archive&gt;</span></span>
+<span id="cb16-636"><a href="#cb16-636" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb16-637"><a href="#cb16-637" aria-hidden="true" tabindex="-1"></a>    (OUTPUT_DIR <span class="op">/</span> <span class="st">"meta.xml"</span>).write_text(xml, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb16-638"><a href="#cb16-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-639"><a href="#cb16-639" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-640"><a href="#cb16-640" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_readme():</span>
+<span id="cb16-641"><a href="#cb16-641" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Write a short README that travels inside the zip file."""</span></span>
+<span id="cb16-642"><a href="#cb16-642" aria-hidden="true" tabindex="-1"></a>    recorded_by <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(</span>
+<span id="cb16-643"><a href="#cb16-643" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"  </span><span class="sc">{</span>group<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>RECORDED_BY[group]<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> group <span class="kw">in</span> <span class="bu">sorted</span>(RECORDED_BY)</span>
+<span id="cb16-644"><a href="#cb16-644" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-645"><a href="#cb16-645" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="ss">f"""CoralNet to Darwin Core Archive</span></span>
+<span id="cb16-646"><a href="#cb16-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-647"><a href="#cb16-647" aria-hidden="true" tabindex="-1"></a><span class="ss">Dataset: MBON Pole to Pole photoquadrats, Azores, 2026</span></span>
+<span id="cb16-648"><a href="#cb16-648" aria-hidden="true" tabindex="-1"></a><span class="ss">Recorded by:</span></span>
+<span id="cb16-649"><a href="#cb16-649" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>recorded_by<span class="sc">}</span></span>
+<span id="cb16-650"><a href="#cb16-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-651"><a href="#cb16-651" aria-hidden="true" tabindex="-1"></a><span class="ss">Files:</span></span>
+<span id="cb16-652"><a href="#cb16-652" aria-hidden="true" tabindex="-1"></a><span class="ss">  event.csv                       one survey event and one event per photo</span></span>
+<span id="cb16-653"><a href="#cb16-653" aria-hidden="true" tabindex="-1"></a><span class="ss">  occurrence.csv                  one row per taxon in one photo</span></span>
+<span id="cb16-654"><a href="#cb16-654" aria-hidden="true" tabindex="-1"></a><span class="ss">  extendedmeasurementorfact.csv   cover, point counts, and quadrat details</span></span>
+<span id="cb16-655"><a href="#cb16-655" aria-hidden="true" tabindex="-1"></a><span class="ss">  meta.xml                        Darwin Core Archive descriptor</span></span>
+<span id="cb16-656"><a href="#cb16-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-657"><a href="#cb16-657" aria-hidden="true" tabindex="-1"></a><span class="ss">Open meta.xml in the IPT, or unzip this folder and use the files directly.</span></span>
+<span id="cb16-658"><a href="#cb16-658" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb16-659"><a href="#cb16-659" aria-hidden="true" tabindex="-1"></a>    (OUTPUT_DIR <span class="op">/</span> <span class="st">"README.txt"</span>).write_text(text, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb16-660"><a href="#cb16-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-661"><a href="#cb16-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-662"><a href="#cb16-662" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_zip():</span>
+<span id="cb16-663"><a href="#cb16-663" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Put the five archive files into one zip file."""</span></span>
+<span id="cb16-664"><a href="#cb16-664" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"p2p-azores-2026.zip"</span></span>
+<span id="cb16-665"><a href="#cb16-665" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> zipfile.ZipFile(</span>
+<span id="cb16-666"><a href="#cb16-666" aria-hidden="true" tabindex="-1"></a>        OUTPUT_DIR <span class="op">/</span> name, <span class="st">"w"</span>, compression<span class="op">=</span>zipfile.ZIP_DEFLATED</span>
+<span id="cb16-667"><a href="#cb16-667" aria-hidden="true" tabindex="-1"></a>    ) <span class="im">as</span> archive:</span>
+<span id="cb16-668"><a href="#cb16-668" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> filename <span class="kw">in</span> [</span>
+<span id="cb16-669"><a href="#cb16-669" aria-hidden="true" tabindex="-1"></a>            <span class="st">"event.csv"</span>,</span>
+<span id="cb16-670"><a href="#cb16-670" aria-hidden="true" tabindex="-1"></a>            <span class="st">"occurrence.csv"</span>,</span>
+<span id="cb16-671"><a href="#cb16-671" aria-hidden="true" tabindex="-1"></a>            <span class="st">"extendedmeasurementorfact.csv"</span>,</span>
+<span id="cb16-672"><a href="#cb16-672" aria-hidden="true" tabindex="-1"></a>            <span class="st">"meta.xml"</span>,</span>
+<span id="cb16-673"><a href="#cb16-673" aria-hidden="true" tabindex="-1"></a>            <span class="st">"README.txt"</span>,</span>
+<span id="cb16-674"><a href="#cb16-674" aria-hidden="true" tabindex="-1"></a>        ]:</span>
+<span id="cb16-675"><a href="#cb16-675" aria-hidden="true" tabindex="-1"></a>            archive.write(OUTPUT_DIR <span class="op">/</span> filename, arcname<span class="op">=</span>filename)</span>
+<span id="cb16-676"><a href="#cb16-676" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> name</span>
+<span id="cb16-677"><a href="#cb16-677" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-678"><a href="#cb16-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-679"><a href="#cb16-679" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb16-680"><a href="#cb16-680" aria-hidden="true" tabindex="-1"></a>    OUTPUT_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-681"><a href="#cb16-681" aria-hidden="true" tabindex="-1"></a>    metadata <span class="op">=</span> read_rows(INPUT_DIR <span class="op">/</span> <span class="st">"metadata.csv"</span>)</span>
+<span id="cb16-682"><a href="#cb16-682" aria-hidden="true" tabindex="-1"></a>    annotations <span class="op">=</span> read_rows(INPUT_DIR <span class="op">/</span> <span class="st">"annotations.csv"</span>)</span>
+<span id="cb16-683"><a href="#cb16-683" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Read </span><span class="sc">{</span><span class="bu">len</span>(metadata)<span class="sc">}</span><span class="ss"> images and </span><span class="sc">{</span><span class="bu">len</span>(annotations)<span class="sc">}</span><span class="ss"> points."</span>)</span>
+<span id="cb16-684"><a href="#cb16-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-685"><a href="#cb16-685" aria-hidden="true" tabindex="-1"></a>    events, image_events <span class="op">=</span> build_events(metadata)</span>
+<span id="cb16-686"><a href="#cb16-686" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Built </span><span class="sc">{</span><span class="bu">len</span>(events)<span class="sc">}</span><span class="ss"> event rows (1 survey + </span><span class="sc">{</span><span class="bu">len</span>(metadata)<span class="sc">}</span><span class="ss"> photos)."</span>)</span>
+<span id="cb16-687"><a href="#cb16-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-688"><a href="#cb16-688" aria-hidden="true" tabindex="-1"></a>    occurrences <span class="op">=</span> build_occurrences(annotations, image_events, metadata)</span>
+<span id="cb16-689"><a href="#cb16-689" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Built </span><span class="sc">{</span><span class="bu">len</span>(occurrences)<span class="sc">}</span><span class="ss"> occurrence rows."</span>)</span>
+<span id="cb16-690"><a href="#cb16-690" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-691"><a href="#cb16-691" aria-hidden="true" tabindex="-1"></a>    emof <span class="op">=</span> build_emof(annotations, events, occurrences)</span>
+<span id="cb16-692"><a href="#cb16-692" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Built </span><span class="sc">{</span><span class="bu">len</span>(emof)<span class="sc">}</span><span class="ss"> measurement rows."</span>)</span>
+<span id="cb16-693"><a href="#cb16-693" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-694"><a href="#cb16-694" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>({row[<span class="st">"eventID"</span>] <span class="cf">for</span> row <span class="kw">in</span> events}) <span class="op">!=</span> <span class="bu">len</span>(events):</span>
+<span id="cb16-695"><a href="#cb16-695" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(<span class="st">"Duplicate eventID found."</span>)</span>
+<span id="cb16-696"><a href="#cb16-696" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>({row[<span class="st">"occurrenceID"</span>] <span class="cf">for</span> row <span class="kw">in</span> occurrences}) <span class="op">!=</span> <span class="bu">len</span>(occurrences):</span>
+<span id="cb16-697"><a href="#cb16-697" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">SystemExit</span>(<span class="st">"Duplicate occurrenceID found."</span>)</span>
+<span id="cb16-698"><a href="#cb16-698" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-699"><a href="#cb16-699" aria-hidden="true" tabindex="-1"></a>    write_rows(events, EVENT_COLUMNS, OUTPUT_DIR <span class="op">/</span> <span class="st">"event.csv"</span>)</span>
+<span id="cb16-700"><a href="#cb16-700" aria-hidden="true" tabindex="-1"></a>    write_rows(occurrences, OCCURRENCE_COLUMNS, OUTPUT_DIR <span class="op">/</span> <span class="st">"occurrence.csv"</span>)</span>
+<span id="cb16-701"><a href="#cb16-701" aria-hidden="true" tabindex="-1"></a>    write_rows(emof, EMOF_COLUMNS, OUTPUT_DIR <span class="op">/</span> <span class="st">"extendedmeasurementorfact.csv"</span>)</span>
+<span id="cb16-702"><a href="#cb16-702" aria-hidden="true" tabindex="-1"></a>    write_meta_xml()</span>
+<span id="cb16-703"><a href="#cb16-703" aria-hidden="true" tabindex="-1"></a>    write_readme()</span>
+<span id="cb16-704"><a href="#cb16-704" aria-hidden="true" tabindex="-1"></a>    zip_name <span class="op">=</span> make_zip()</span>
+<span id="cb16-705"><a href="#cb16-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-706"><a href="#cb16-706" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrote:"</span>)</span>
+<span id="cb16-707"><a href="#cb16-707" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> [</span>
+<span id="cb16-708"><a href="#cb16-708" aria-hidden="true" tabindex="-1"></a>        <span class="st">"output/event.csv"</span>,</span>
+<span id="cb16-709"><a href="#cb16-709" aria-hidden="true" tabindex="-1"></a>        <span class="st">"output/occurrence.csv"</span>,</span>
+<span id="cb16-710"><a href="#cb16-710" aria-hidden="true" tabindex="-1"></a>        <span class="st">"output/extendedmeasurementorfact.csv"</span>,</span>
+<span id="cb16-711"><a href="#cb16-711" aria-hidden="true" tabindex="-1"></a>        <span class="st">"output/meta.xml"</span>,</span>
+<span id="cb16-712"><a href="#cb16-712" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"output/</span><span class="sc">{</span>zip_name<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb16-713"><a href="#cb16-713" aria-hidden="true" tabindex="-1"></a>    ]:</span>
+<span id="cb16-714"><a href="#cb16-714" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"  "</span> <span class="op">+</span> name)</span>
+<span id="cb16-715"><a href="#cb16-715" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Done."</span>)</span>
+<span id="cb16-716"><a href="#cb16-716" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-717"><a href="#cb16-717" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-718"><a href="#cb16-718" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb16-719"><a href="#cb16-719" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><a href="convert.py">Download <code>convert.py</code></a>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Example: Azores, 2026</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
