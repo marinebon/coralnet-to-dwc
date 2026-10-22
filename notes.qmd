@@ -1,0 +1,62 @@
+---
+title: "Notes and limits"
+---
+
+This is a small example.
+These notes explain what it does and what it does not do.
+
+## The survey
+
+- The script expects one survey date.
+- The example has one transect and one tidal level.
+- Each photo must have 100 points.
+- The script stops if a label is not in the `TAXA` table.
+
+## The parent event
+
+The parent event is a summary.
+Its latitude and longitude are the centre of the 59 photo positions.
+It is not a real sampled point.
+The child events are the real photo positions.
+
+## Names
+
+`recordedBy` is free text at the top of the script.
+It is written to the parent event and to every photo event.
+
+`identifiedBy` is the CoralNet username.
+It includes `robot` when the computer made the identification.
+A mixed row can have more than one username, separated by `; `.
+
+`occurrenceStatus` is `detected` on every row.
+`notDetected` is the other Darwin Core value, but no absence rows are written.
+
+## What is not here
+
+- No depth. The quadrats are above water.
+- No time of day. Only the date is known.
+- No absence records. A taxon that was not found has no row.
+- No image files or image URLs.
+- No EML. Add EML in the IPT.
+- No `associatedMedia` column. Add it when stable image URLs exist.
+
+## Decisions to review
+
+- `CIRRIPE` is mapped to *Chthamalus stellatus* (AphiaID 106231).
+- `RVL` has one point in one image.
+- `MAF` and `MAEN` are deferred.
+- `SC` and `Unc` are left out.
+- Coordinates are rounded to 6 decimal places.
+- The parent event has a wider position uncertainty than the photo events.
+
+## Change it for a new survey
+
+1. Put the new `metadata.csv` and `annotations.csv` in `data/`.
+2. Change the settings at the top of `convert.py` and `convert.R`.
+3. Change the `TAXA` table in both scripts.
+4. Run one script.
+5. Check the counts and the label mapping.
+6. Open the zip in the IPT.
+
+Keep the Python and R scripts in step.
+They should write the same files.

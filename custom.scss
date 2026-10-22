@@ -1,0 +1,42 @@
+/*-- scss:defaults --*/
+$primary: #176b87;
+$link-color: #176b87;
+$link-hover-color: #0d4b60;
+$navbar-bg: #ffffff;
+$navbar-fg: #1b2a32;
+$navbar-hl: #176b87;
+$font-family-sans-serif: "Inter", "Helvetica Neue", Arial, sans-serif;
+$headings-font-weight: 600;
+
+/*-- scss:rules --*/
+.navbar {
+  border-bottom: 1px solid #e6ecef;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  margin-top: 2.2rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #eef2f4;
+}
+
+.callout {
+  border-radius: 6px;
+}
+
+code {
+  font-size: 0.88em;
+}
+
+table code {
+  white-space: nowrap;
+}
+
+.lead {
+  font-size: 1.08rem;
+  color: #465861;
+  max-width: 46rem;
+}

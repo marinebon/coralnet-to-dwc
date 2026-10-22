@@ -1,0 +1,104 @@
+---
+title: "The data"
+---
+
+The example uses four CSV files from CoralNet.
+
+| file | rows | what it is |
+|---|---:|---|
+| `metadata.csv` | 59 | one row per photo |
+| `annotations.csv` | 5,900 | one row per point |
+| `labelset.csv` | 15 | the CoralNet label list |
+| `percent_covers.csv` | 59 | CoralNet's own cover summary |
+
+The scripts read only `metadata.csv` and `annotations.csv`.
+The other two files are useful for checking the result.
+
+## The photos
+
+Each row in `metadata.csv` has:
+
+- the image name
+- the date
+- the latitude and longitude
+- the camera height
+- the camera name
+- the field group
+
+All 59 photos are from one survey.
+The date is 2026-10-20.
+The place is Forte do Negrito, Terceira, Azores, Portugal.
+The habitat is rocky intertidal, midtide level.
+
+## The points
+
+Each row in `annotations.csv` is one point in one photo.
+Each photo has 100 points.
+The file has 5,900 rows.
+
+The important columns are:
+
+| column | meaning |
+|---|---|
+| `Name` | the image name |
+| `Label code` | the short CoralNet label |
+| `Label ID` | the CoralNet label number |
+| `Annotator` | the CoralNet username |
+
+The annotator can be a person or `robot`.
+`robot` means the automated classifier.
+
+## The labels
+
+Six labels become occurrences.
+
+| CoralNet label | Darwin Core name | what it is |
+|---|---|---|
+| `CHLOROPHY` | Chlorophyta | green algae, phylum |
+| `CIRRIPE` | *Chthamalus stellatus* | barnacle, species |
+| `CORALLINA` | Corallinaceae | coralline red algae, family |
+| `RHODO` | Rhodophyta | red algae, phylum |
+| `RVL` | *Rivularia* | cyanobacterium, genus |
+| `ULVA` | *Ulva* | green algae, genus |
+
+These labels are left out:
+
+| label | why |
+|---|---|
+| `SC` | substrate, not a taxon |
+| `Unc` | unclear, not a taxon |
+| `MAF` | filamentous macroalgae, deferred |
+| `MAEN` | encrusting macroalgae, deferred |
+
+::: {.callout-important}
+`CIRRIPE` is a generic barnacle label.
+It is mapped to *Chthamalus stellatus* because that is the barnacle in these photos.
+Please review this mapping.
+
+`RVL` has one point in one photo.
+Please review this record before publishing.
+:::
+
+## The names
+
+`recordedBy` is free text at the top of the script.
+It is not read from the CSV files.
+
+`identifiedBy` uses the CoralNet username exactly.
+It includes `robot` when the computer made the identification.
+A mixed row can have more than one username, separated by `; `.
+
+## The taxonomy
+
+Each taxon in the script has a WoRMS AphiaID.
+The occurrence ID ends with that number.
+For example:
+
+```text
+MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE:T1:IMG0128:aphia-144296
+```
+
+The last part, `aphia-144296`, is *Ulva*.
+
+The taxonomy is written in the script.
+A new survey may need new names and new AphiaIDs.

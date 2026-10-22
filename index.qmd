@@ -1,0 +1,59 @@
+---
+title: "CoralNet to Darwin Core"
+toc: false
+---
+
+::: {.lead}
+This website shows how to turn CoralNet files into Darwin Core.
+
+The files come from photoquadrats on a rocky shore.
+The survey used the MBON Pole to Pole method.
+People and a computer marked the organisms in each photo in CoralNet.
+
+Darwin Core is a common table format for biodiversity data.
+OBIS uses Darwin Core for its data archive.
+:::
+
+This example is from the Azores in 2026.
+It has 59 photos and 5,900 points.
+The conversion makes 60 events, 106 occurrences, and 601 measurements.
+
+## Start here
+
+- **[The steps](steps.qmd)** — what the conversion does, in order.
+- **[The data](data.qmd)** — the input files and the label choices.
+- **[Python](python.qmd)** — read `convert.py` with output along the way.
+- **[R](r.qmd)** — read `convert.R` with output along the way.
+- **[Output files](outputs.qmd)** — the tables and the zip archive.
+- **[Notes](notes.qmd)** — limits and decisions.
+
+## The two scripts
+
+There is one Python script and one R script.
+Each one does the whole conversion.
+They do not need a config file.
+The names and settings are at the top of each script.
+
+The script looks long because it lists every column and every taxon.
+The steps are simple.
+
+Both scripts write the same files.
+You only need to run one of them.
+
+::: {.callout-note}
+This is a small example, not a general tool.
+To use another survey, change the names and numbers at the top of the script.
+Also check the label table in the script.
+:::
+
+## What you get
+
+| file | rows | what it is |
+|---|---:|---|
+| `event.csv` | 60 | one survey event and 59 photo events |
+| `occurrence.csv` | 106 | one taxon in one photo |
+| `extendedmeasurementorfact.csv` | 601 | cover, point counts, and quadrat details |
+| `meta.xml` | — | tells the IPT how the columns map to Darwin Core |
+| `p2p-azores-2026.zip` | — | all files together, ready for the IPT |
+
+See [Output files](outputs.qmd) for the downloads.

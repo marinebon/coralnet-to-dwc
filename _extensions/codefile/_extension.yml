@@ -1,0 +1,6 @@
+title: codefile
+author: coralnet-to-dwc
+version: 1.0.0
+contributes:
+  shortcodes:
+    - codefile.lua

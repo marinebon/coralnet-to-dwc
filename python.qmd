@@ -1,0 +1,268 @@
+---
+title: "Python notebook"
+jupyter: python3
+---
+
+This page follows `convert.py` from top to bottom.
+The code is shown in small parts.
+The output comes from the example data.
+
+The full script is at the bottom.
+Run it from the project folder:
+
+```bash
+python3 convert.py
+```
+
+## 1. Settings
+
+The top of the script holds the names and numbers.
+There is no config file.
+Change these values for a new survey.
+
+```python
+BASE_DIR = Path(__file__).resolve().parent
+INPUT_DIR = BASE_DIR / "data"
+OUTPUT_DIR = BASE_DIR / "output"
+
+# Enter the names of the people who recorded the samples.
+RECORDED_BY = "Tylar Murray, Carolina Peralta"
+
+PROJECT_CODE = "MBON-P2P"
+COUNTRY_CODE = "PT"          # ISO 3166-1 alpha-2
+COUNTRY_ID_CODE = "PRT"      # ISO 3166-1 alpha-3, used in the identifiers
+LOCALITY = "Forte do Negrito"
+POINTS_PER_IMAGE = 100
+```
+
+The script writes this text to every event:
+
+```{python}
+#| echo: false
+import csv
+
+with open("output/event.csv", newline="", encoding="utf-8") as handle:
+    events = list(csv.DictReader(handle))
+
+print("recordedBy:", events[0]["recordedBy"])
+print("survey ID: ", events[0]["eventID"])
+print("photos:    ", len(events) - 1)
+```
+
+## 2. The TAXA table
+
+Each label that becomes an occurrence has one entry.
+The entry has the CoralNet label ID, the scientific name, the AphiaID, and the taxonomy.
+
+```python
+TAXA = {
+    "CHLOROPHY": {
+        "label_id": "4095", "name": "Chlorophyta", "aphia": "801",
+        "authorship": "Pascher, 1914", "rank": "phylum",
+        "kingdom": "Plantae", "phylum": "Chlorophyta",
+        "class": "", "order": "", "family": "", "genus": "",
+        "remark": "Green algae; identified to phylum",
+    },
+    "CIRRIPE": {
+        "label_id": "2812", "name": "Chthamalus stellatus",
+        "aphia": "106231", "authorship": "(Poli, 1791)", "rank": "species",
+        "kingdom": "Animalia", "phylum": "Arthropoda",
+        "class": "Thecostraca", "order": "Balanomorpha",
+        "family": "Chthamalidae", "genus": "Chthamalus",
+        "remark": "Barnacle; CoralNet label CIRRIPE mapped to Chthamalus stellatus",
+    },
+    # ... four more taxa ...
+}
+```
+
+This is the result for the example:
+
+```{python}
+#| echo: false
+from collections import Counter
+
+with open("output/occurrence.csv", newline="", encoding="utf-8") as handle:
+    occurrences = list(csv.DictReader(handle))
+
+counts = Counter(row["scientificName"] for row in occurrences)
+for name, count in sorted(counts.items()):
+    print(f"{name:24} {count:3} occurrences")
+```
+
+## 3. Read the files
+
+The script uses the standard `csv` module.
+There are no extra Python packages.
+
+```python
+def read_rows(path):
+    """Read a CSV file into a list of dictionaries."""
+    with path.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+```
+
+```{python}
+#| echo: false
+with open("data/metadata.csv", newline="", encoding="utf-8") as handle:
+    metadata = list(csv.DictReader(handle))
+with open("data/annotations.csv", newline="", encoding="utf-8") as handle:
+    annotations = list(csv.DictReader(handle))
+
+print(f"{len(metadata)} images")
+print(f"{len(annotations)} points")
+print()
+for row in metadata[:3]:
+    print(row["Name"], row["Date"], row["Latitude"], row["Longitude"])
+```
+
+## 4. Make the events
+
+The parent event is the whole survey.
+Each photo gets a child event.
+The photo event ID ends with the frame number.
+
+```python
+def survey_id(date):
+    return ":".join([
+        PROJECT_CODE, date.replace("-", ""), COUNTRY_ID_CODE,
+        ISLAND_CODE, SITE_CODE, STRATA, TRANSECT,
+    ])
+
+def frame_from_name(image_name):
+    stem = Path(image_name).stem
+    frame = stem.split("_")[-1][-4:]
+    if not frame.isdigit():
+        raise SystemExit(f"Cannot find a 4-digit frame number in {image_name!r}")
+    return frame
+```
+
+```{python}
+#| echo: false
+print("parent:")
+print(" ", events[0]["eventID"])
+print("  ", events[0]["decimalLatitude"], events[0]["decimalLongitude"])
+print()
+print("first child:")
+print(" ", events[1]["eventID"])
+print("  ", events[1]["decimalLatitude"], events[1]["decimalLongitude"])
+print("  parent:", events[1]["parentEventID"])
+```
+
+## 5. Count the points
+
+The script groups the points by image and label.
+It counts all points.
+It also counts the points made by `robot`.
+
+```python
+groups = {}
+for row in annotations:
+    key = (row["Name"], row["Label code"])
+    groups.setdefault(key, []).append(row)
+
+for (image, code), rows in groups.items():
+    points = len(rows)
+    machine = sum(1 for row in rows if row["Annotator"] == "robot")
+    human = points - machine
+```
+
+The percent cover is points divided by total points, times 100.
+
+```{python}
+#| echo: false
+print(f"{'taxon':24} {'cover':>6}  {'basis':18} identifiedBy")
+print("-" * 80)
+for row in occurrences[:8]:
+    print(
+        f"{row['scientificName']:24} "
+        f"{row['organismQuantity']:>6}  "
+        f"{row['basisOfRecord']:18} "
+        f"{row['identifiedBy']}"
+    )
+```
+
+## 6. Make the measurements
+
+A measurement is one number with a type and a unit.
+This helper keeps the rows short.
+
+```python
+def measurement(event_id, occurrence_id, name, mtype, value, unit,
+                unit_id="", type_id="", method="", remarks=""):
+    prefix = occurrence_id or event_id
+    return {
+        "eventID": event_id,
+        "occurrenceID": occurrence_id,
+        "measurementID": f"{prefix}:{name}",
+        "measurementType": mtype,
+        "measurementTypeID": type_id,
+        "measurementValue": value,
+        "measurementUnit": unit,
+        "measurementUnitID": unit_id,
+        "measurementMethod": method,
+        "measurementRemarks": remarks,
+    }
+```
+
+The first measurements in the file are:
+
+```{python}
+#| echo: false
+with open(
+    "output/extendedmeasurementorfact.csv", newline="", encoding="utf-8"
+) as handle:
+    measurements = list(csv.DictReader(handle))
+
+for row in measurements[:5]:
+    print(f"{row['measurementType']:42} {row['measurementValue']:>8} {row['measurementUnit']}")
+```
+
+## 7. Write the files
+
+The script writes three CSV files.
+Then it writes `meta.xml`.
+Then it puts everything in a zip file.
+
+```python
+def make_zip():
+    name = "p2p-azores-2026.zip"
+    with zipfile.ZipFile(
+        OUTPUT_DIR / name, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        for filename in [
+            "event.csv", "occurrence.csv",
+            "extendedmeasurementorfact.csv", "meta.xml", "README.txt",
+        ]:
+            archive.write(OUTPUT_DIR / filename, arcname=filename)
+    return name
+```
+
+```{python}
+#| echo: false
+from pathlib import Path
+import zipfile
+
+print("output files:")
+for name in [
+    "event.csv", "occurrence.csv", "extendedmeasurementorfact.csv",
+    "meta.xml", "README.txt", "p2p-azores-2026.zip",
+]:
+    path = Path("output") / name
+    print(f"  {name:36} {path.stat().st_size:>8} bytes")
+
+print()
+print("zip contents:")
+with zipfile.ZipFile("output/p2p-azores-2026.zip") as archive:
+    for name in archive.namelist():
+        print(" ", name)
+```
+
+## Full script
+
+::: {.callout-note collapse="true"}
+## `convert.py`
+
+{{< codefile convert.py python >}}
+:::
+
+[Download `convert.py`](convert.py).

@@ -1,0 +1,89 @@
+---
+title: "The steps"
+---
+
+The Python and R scripts do the same steps.
+This page explains the steps in plain words.
+The next pages show the code.
+
+## Three Darwin Core ideas
+
+**An event** is a place and a time.
+One event is the whole survey.
+Each photo is also an event, because each photo has its own position.
+
+**An occurrence** is one taxon in one photo.
+If a photo has *Ulva* and *Chlorophyta*, it has two occurrences.
+The occurrence records how many points hit that taxon.
+
+**A measurement** is a number about an event or an occurrence.
+Here, a measurement can be percent cover, a point count, the quadrat area, or the camera height.
+
+## The six steps
+
+### 1. Read the files
+
+The script reads two files:
+
+- `metadata.csv`: one row for each photo.
+- `annotations.csv`: one row for each point in each photo.
+
+It does not read a config file.
+The settings are at the top of the script.
+
+### 2. Make the events
+
+The script makes one parent event for the survey.
+Then it makes one child event for each photo.
+The parent event uses the centre of all photo positions.
+Each child event uses its own photo position.
+
+### 3. Check the points
+
+Each photo must have 100 points.
+The script stops if a photo has a different number.
+This keeps the percent cover easy to read: 1 point = 1 percent.
+
+### 4. Make the occurrences
+
+The script groups the points by photo and by CoralNet label.
+It counts the points for each group.
+If the group is a taxon, the script writes an occurrence.
+If the group is substrate or unclear, the script leaves it out.
+If the group is a deferred macroalga, the script leaves it out for now.
+
+The percent cover is:
+
+```text
+points for this taxon / all points in the photo * 100
+```
+
+### 5. Make the measurements
+
+For each photo, the script writes three measurements:
+
+- quadrat area
+- camera height
+- number of points that are not a taxon
+
+For each occurrence, it writes four measurements:
+
+- percent cover
+- number of points
+- machine-annotated points
+- human-annotated points
+
+### 6. Write the archive
+
+The script writes four text files and one zip file.
+`meta.xml` tells the IPT which column is which Darwin Core term.
+
+## What stays out
+
+- No depth. The quadrats are above water.
+- No time of day. Only the date is known.
+- No absence records. Only detected taxa are written.
+- No image files or image URLs.
+- No EML. EML is added later in the IPT.
+
+See [Notes](notes.qmd) for more.

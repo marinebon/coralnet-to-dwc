@@ -1,0 +1,74 @@
+---
+title: "Output files"
+---
+
+The script writes everything to the `output` folder.
+
+| file | rows | what it is |
+|---|---:|---|
+| [`event.csv`](output/event.csv) | 60 | one survey event and 59 photo events |
+| [`occurrence.csv`](output/occurrence.csv) | 106 | one taxon in one photo |
+| [`extendedmeasurementorfact.csv`](output/extendedmeasurementorfact.csv) | 601 | cover, point counts, and quadrat details |
+| [`meta.xml`](output/meta.xml) | — | the Darwin Core Archive descriptor |
+| [`README.txt`](output/README.txt) | — | a short note for the archive |
+| [`p2p-azores-2026.zip`](output/p2p-azores-2026.zip) | — | all files together |
+
+The zip file is the easiest thing to upload to the IPT.
+
+## What is in each table?
+
+### Events
+
+The first row is the parent event for the survey.
+The other 59 rows are the photo events.
+Each photo event has its own latitude and longitude.
+
+### Occurrences
+
+Each row is one taxon in one photo.
+The row has the scientific name, the AphiaID, the percent cover, and the person or machine that identified it.
+
+### Measurements
+
+The eMoF table has seven kinds of measurement:
+
+| measurement | rows | unit |
+|---|---:|---|
+| quadrat area | 59 | square metres |
+| camera height above substrate | 59 | centimetres |
+| number of points classified as non-taxon | 59 | counts |
+| percent cover | 106 | percent |
+| number of points | 106 | counts |
+| machine-annotated points | 106 | counts |
+| human-annotated points | 106 | counts |
+
+## A first look at the occurrences
+
+```{r}
+#| echo: false
+occ <- read.csv("output/occurrence.csv", colClasses = "character",
+                check.names = FALSE)
+first <- occ[1:10, c(
+  "scientificName", "organismQuantity", "basisOfRecord", "identifiedBy"
+)]
+print(first, row.names = FALSE)
+```
+
+## The archive
+
+The zip file contains:
+
+- `event.csv`
+- `occurrence.csv`
+- `extendedmeasurementorfact.csv`
+- `meta.xml`
+- `README.txt`
+
+`meta.xml` tells the IPT which column is which Darwin Core term.
+The column order in the CSV files must match `meta.xml`.
+The script writes both, so they stay in step.
+
+::: {.callout-note}
+The script does not make EML.
+Add the dataset title, abstract, methods, and licence in the IPT.
+:::

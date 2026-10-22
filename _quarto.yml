@@ -1,0 +1,55 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - "*.qmd"
+  resources:
+    - output/*
+    - data/*.csv
+    - convert.py
+    - convert.R
+
+website:
+  title: "CoralNet to Darwin Core"
+  description: "A simple guide to converting CoralNet photoquadrat files into Darwin Core for OBIS."
+  search:
+    location: navbar
+    type: overlay
+  page-navigation: true
+  navbar:
+    title: "CoralNet to Darwin Core"
+    left:
+      - href: index.qmd
+        text: Home
+      - href: steps.qmd
+        text: Steps
+      - href: data.qmd
+        text: Data
+      - href: python.qmd
+        text: Python
+      - href: r.qmd
+        text: R
+      - href: outputs.qmd
+        text: Outputs
+      - href: notes.qmd
+        text: Notes
+  page-footer:
+    left: "Example: Azores, 2026"
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    toc: true
+    toc-depth: 2
+    toc-title: "On this page"
+    code-copy: true
+    code-overflow: wrap
+    code-line-numbers: false
+    link-external-newwindow: true
+
+execute:
+  echo: true
+  warning: false
+  message: false

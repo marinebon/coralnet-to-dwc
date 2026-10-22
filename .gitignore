@@ -1,0 +1,12 @@
+_site/
+.quarto/
+.Rhistory
+.RData
+.Rproj.user
+__pycache__/
+*.pyc
+.venv/
+notes~
+
+/.quarto/
+**/*.quarto_ipynb

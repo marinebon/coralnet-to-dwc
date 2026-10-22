@@ -1,0 +1,269 @@
+---
+title: "R notebook"
+---
+
+This page follows `convert.R` from top to bottom.
+The code is shown in small parts.
+The output comes from the example data.
+
+The full script is at the bottom.
+Run it from the project folder:
+
+```bash
+Rscript convert.R
+```
+
+## 1. Settings
+
+The top of the script holds the names and numbers.
+There is no config file.
+Change these values for a new survey.
+
+```r
+BASE_DIR <- getwd()
+INPUT_DIR <- file.path(BASE_DIR, "data")
+OUTPUT_DIR <- file.path(BASE_DIR, "output")
+
+# Enter the names of the people who recorded the samples.
+RECORDED_BY <- "Tylar Murray, Carolina Peralta"
+
+PROJECT_CODE <- "MBON-P2P"
+COUNTRY_CODE <- "PT"        # ISO 3166-1 alpha-2
+COUNTRY_ID_CODE <- "PRT"    # ISO 3166-1 alpha-3, used in the identifiers
+LOCALITY <- "Forte do Negrito"
+POINTS_PER_IMAGE <- 100
+```
+
+The script writes this text to every event:
+
+```{r}
+#| echo: false
+events <- read.csv("output/event.csv", colClasses = "character",
+                   check.names = FALSE)
+cat("recordedBy:", events$recordedBy[1], "\n")
+cat("survey ID: ", events$eventID[1], "\n")
+cat("photos:    ", nrow(events) - 1, "\n")
+```
+
+## 2. The TAXA table
+
+Each label that becomes an occurrence has one entry.
+The entry has the CoralNet label ID, the scientific name, the AphiaID, and the taxonomy.
+
+```r
+TAXA <- list(
+  CHLOROPHY = list(
+    label_id = "4095", name = "Chlorophyta", aphia = "801",
+    authorship = "Pascher, 1914", rank = "phylum",
+    kingdom = "Plantae", phylum = "Chlorophyta",
+    class = "", order = "", family = "", genus = "",
+    remark = "Green algae; identified to phylum"
+  ),
+  CIRRIPE = list(
+    label_id = "2812", name = "Chthamalus stellatus",
+    aphia = "106231", authorship = "(Poli, 1791)", rank = "species",
+    kingdom = "Animalia", phylum = "Arthropoda",
+    class = "Thecostraca", order = "Balanomorpha",
+    family = "Chthamalidae", genus = "Chthamalus",
+    remark = "Barnacle; CoralNet label CIRRIPE mapped to Chthamalus stellatus"
+  ),
+  # ... four more taxa ...
+)
+```
+
+This is the result for the example:
+
+```{r}
+#| echo: false
+occurrences <- read.csv("output/occurrence.csv", colClasses = "character",
+                        check.names = FALSE)
+taxa_counts <- as.data.frame(table(occurrences$scientificName))
+names(taxa_counts) <- c("scientificName", "occurrences")
+print(taxa_counts, row.names = FALSE)
+```
+
+## 3. Read the files
+
+The script uses only base R.
+There are no extra R packages.
+
+```r
+read_table <- function(path) {
+  read.csv(path, colClasses = "character", check.names = FALSE,
+           stringsAsFactors = FALSE, fileEncoding = "UTF-8")
+}
+```
+
+```{r}
+#| echo: false
+metadata <- read.csv("data/metadata.csv", colClasses = "character",
+                     check.names = FALSE)
+annotations <- read.csv("data/annotations.csv", colClasses = "character",
+                        check.names = FALSE)
+cat(nrow(metadata), "images\n")
+cat(nrow(annotations), "points\n\n")
+for (i in 1:3) {
+  cat(metadata$Name[i], metadata$Date[i], "\n")
+}
+cat("\nfirst position:", metadata$Latitude[1], metadata$Longitude[1], "\n")
+```
+
+## 4. Make the events
+
+The parent event is the whole survey.
+Each photo gets a child event.
+The photo event ID ends with the frame number.
+
+```r
+survey_id <- function(date) {
+  paste(
+    PROJECT_CODE, gsub("-", "", date), COUNTRY_ID_CODE, ISLAND_CODE,
+    SITE_CODE, STRATA, TRANSECT, sep = ":"
+  )
+}
+
+frame_from_name <- function(image_name) {
+  stem <- sub("\\.[^.]*$", "", image_name)
+  frame <- substr(stem, nchar(stem) - 3, nchar(stem))
+  if (!grepl("^[0-9]{4}$", frame)) {
+    stop("Cannot find a 4-digit frame number in ", image_name)
+  }
+  frame
+}
+```
+
+```{r}
+#| echo: false
+cat("parent:\n")
+cat(" ", events$eventID[1], "\n")
+cat("  ", events$decimalLatitude[1], events$decimalLongitude[1], "\n\n")
+cat("first child:\n")
+cat(" ", events$eventID[2], "\n")
+cat("  ", events$decimalLatitude[2], events$decimalLongitude[2], "\n")
+cat("  parent:", events$parentEventID[2], "\n")
+```
+
+## 5. Count the points
+
+The script groups the points by image and label.
+It counts all points.
+It also counts the points made by `robot`.
+
+```r
+# Inside the loop for one image and one label:
+points <- annotations[
+  annotations$Name == image & annotations[["Label code"]] == code, ,
+  drop = FALSE
+]
+count <- nrow(points)
+machine <- sum(points$Annotator == "robot")
+human <- count - machine
+annotators <- sort(unique(points$Annotator), method = "radix")
+```
+
+The percent cover is points divided by total points, times 100.
+
+```{r}
+#| echo: false
+cat(sprintf("%-24s %6s  %-18s %s\n",
+            "taxon", "cover", "basis", "identifiedBy"))
+cat(strrep("-", 80), "\n")
+for (i in 1:8) {
+  cat(sprintf("%-24s %6s  %-18s %s\n",
+              occurrences$scientificName[i],
+              occurrences$organismQuantity[i],
+              occurrences$basisOfRecord[i],
+              occurrences$identifiedBy[i]))
+}
+```
+
+## 6. Make the measurements
+
+A measurement is one number with a type and a unit.
+This helper keeps the rows short.
+
+```r
+measurement <- function(event_id, occurrence_id, name, mtype, value, unit,
+                        unit_id = "", type_id = "", method = "",
+                        remarks = "") {
+  prefix <- if (nzchar(occurrence_id)) occurrence_id else event_id
+  list(
+    eventID = event_id,
+    occurrenceID = occurrence_id,
+    measurementID = paste0(prefix, ":", name),
+    measurementType = mtype,
+    measurementTypeID = type_id,
+    measurementValue = value,
+    measurementUnit = unit,
+    measurementUnitID = unit_id,
+    measurementMethod = method,
+    measurementRemarks = remarks
+  )
+}
+```
+
+The first measurements in the file are:
+
+```{r}
+#| echo: false
+measurements <- read.csv(
+  "output/extendedmeasurementorfact.csv",
+  colClasses = "character", check.names = FALSE
+)
+for (i in 1:5) {
+  cat(sprintf("%-42s %8s %s\n",
+              measurements$measurementType[i],
+              measurements$measurementValue[i],
+              measurements$measurementUnit[i]))
+}
+```
+
+## 7. Write the files
+
+The script writes three CSV files.
+Then it writes `meta.xml`.
+Then it puts everything in a zip file.
+
+```r
+make_zip <- function() {
+  old_dir <- setwd(OUTPUT_DIR)
+  on.exit(setwd(old_dir), add = TRUE)
+  unlink("p2p-azores-2026.zip")
+  utils::zip(
+    "p2p-azores-2026.zip",
+    files = c(
+      "event.csv", "occurrence.csv", "extendedmeasurementorfact.csv",
+      "meta.xml", "README.txt"
+    ),
+    flags = "-j"
+  )
+  "p2p-azores-2026.zip"
+}
+```
+
+```{r}
+#| echo: false
+files <- c(
+  "event.csv", "occurrence.csv", "extendedmeasurementorfact.csv",
+  "meta.xml", "README.txt", "p2p-azores-2026.zip"
+)
+cat("output files:\n")
+for (name in files) {
+  size <- file.info(file.path("output", name))$size
+  cat(sprintf("  %-36s %8d bytes\n", name, size))
+}
+cat("\nzip contents:\n")
+for (name in unzip("output/p2p-azores-2026.zip", list = TRUE)$Name) {
+  cat(" ", name, "\n")
+}
+```
+
+## Full script
+
+::: {.callout-note collapse="true"}
+## `convert.R`
+
+{{< codefile convert.R r >}}
+:::
+
+[Download `convert.R`](convert.R).
