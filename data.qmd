@@ -2,17 +2,16 @@
 title: "The data"
 ---
 
-The example uses four CSV files from CoralNet.
+The example uses three CSV files from CoralNet.
 
 | file | rows | what it is |
 |---|---:|---|
-| `metadata.csv` | 59 | one row per photo |
-| `annotations.csv` | 5,900 | one row per point |
+| `metadata.csv` | 207 | one row per photo |
+| `annotations.csv` | 20,700 | one row per point |
 | `labelset.csv` | 15 | the CoralNet label list |
-| `percent_covers.csv` | 59 | CoralNet's own cover summary |
 
 The scripts read only `metadata.csv` and `annotations.csv`.
-The other two files are useful for checking the result.
+The label list is useful for checking the result.
 
 ## The photos
 
@@ -25,10 +24,11 @@ Each row in `metadata.csv` has:
 - the camera name (the short name `TG-7`)
 - the field group
 
-All 59 photos are from one survey.
+All 207 photos are from one survey.
 The date is 2026-10-20.
 The place is Forte do Negrito, Terceira, Azores, Portugal.
 The habitat is rocky intertidal, midtide level.
+The photos are divided into four field groups: `Group_1` to `Group_4`.
 
 The camera is the **OM System Tough TG-7**.
 The `Camera` column uses the short name `TG-7`.
@@ -36,13 +36,13 @@ The scripts write the full camera name in the event remarks.
 
 The GPS positions come from the GPS built into the OM System Tough TG-7 camera.
 Photo events use a position uncertainty of 1 metre.
-The parent event uses 100 metres because it is a centre point for the survey.
+The parent event uses 500 metres because it represents the full beach, not one photo position.
 
 ## The points
 
 Each row in `annotations.csv` is one point in one photo.
 Each photo has 100 points.
-The file has 5,900 rows.
+The file has 20,700 rows.
 
 The important columns are:
 
@@ -58,7 +58,7 @@ The annotator can be a person or `robot`.
 
 ## The labels
 
-Six labels become occurrences.
+Ten labels become occurrences.
 
 | CoralNet label | Darwin Core name | what it is |
 |---|---|---|
@@ -68,6 +68,10 @@ Six labels become occurrences.
 | `RHODO` | Rhodophyta | red algae, phylum |
 | `RVL` | *Rivularia* | cyanobacterium, genus |
 | `ULVA` | *Ulva* | green algae, genus |
+| `FUCUS` | *Fucus* | brown algae, genus |
+| `G.griffith` | *Gymnogongrus griffithsiae* | red algae, species |
+| `LIQYELLLOW` | *Caloplaca marina* | lichen, species |
+| `gastropod` | Gastropoda | snails and slugs, class |
 
 These labels are left out:
 
@@ -75,26 +79,32 @@ These labels are left out:
 |---|---|
 | `SC` | substrate, not a taxon |
 | `Unc` | unclear, not a taxon |
-| `MAF` | filamentous macroalgae, deferred |
-| `MAEN` | encrusting macroalgae, deferred |
+| `LICHEN` | generic lichen, not one taxon |
+| `MAF` | filamentous macroalgae, functional group |
+| `MAEN` | encrusting macroalgae, functional group |
 
 ::: {.callout-important}
 `CIRRIPE` is a generic barnacle label.
 It is mapped to *Chthamalus stellatus* because that is the barnacle in these photos.
 Please review this mapping.
 
-`RVL` has one point in one photo.
-Please review this record before publishing.
+`RVL` has two points in two photos.
+Please review these records before publishing.
 :::
 
 ## The names
 
 `recordedBy` is free text at the top of the script.
-It is not read from the CSV files.
+There is one string for each field group, and it is written to the
+occurrence table. It is not read from the CSV files.
+If a group has more than one recorder, the names are separated by `|`.
 
 `identifiedBy` lists the CoralNet usernames for human annotations.
 The CoralNet `robot` value is written as `CoralNet machine learning annotator`.
-A mixed row can have more than one name, separated by `; `.
+A mixed row can have more than one name, separated by `|`.
+
+The current 2026 data has no `Imported` value in the `Annotator` column.
+If that value appears in another export, see the explanation in [Notes](notes.qmd).
 
 ## The taxonomy
 
@@ -103,7 +113,7 @@ The occurrence ID ends with that number.
 For example:
 
 ```text
-MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE:T1:IMG0128:aphia-144296
+MBON-P2P:20261020:PRT:TER:FDN:MIDTIDE:G1:IMG0128:aphia-144296
 ```
 
 The last part, `aphia-144296`, is *Ulva*.

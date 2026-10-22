@@ -15,8 +15,9 @@ OBIS uses Darwin Core for its data archive.
 :::
 
 This example is from the Azores in 2026.
-It has 59 photos and 5,900 points.
-The conversion makes 60 events, 106 occurrences, and 601 measurements.
+It has 207 photos and 20,700 points.
+The photos come from four field groups.
+The conversion makes 208 events, 504 occurrences, and 2,637 measurements.
 
 ## Start here
 
@@ -50,9 +51,9 @@ Also check the label table in the script.
 
 | file | rows | what it is |
 |---|---:|---|
-| `event.csv` | 60 | one survey event and 59 photo events |
-| `occurrence.csv` | 106 | one taxon in one photo |
-| `extendedmeasurementorfact.csv` | 601 | cover, point counts, and quadrat details |
+| `event.csv` | 208 | one survey event and 207 photo events |
+| `occurrence.csv` | 504 | one taxon in one photo |
+| `extendedmeasurementorfact.csv` | 2,637 | cover, point counts, and quadrat details |
 | `meta.xml` | — | tells the IPT how the columns map to Darwin Core |
 | `p2p-azores-2026.zip` | — | all files together, ready for the IPT |
 

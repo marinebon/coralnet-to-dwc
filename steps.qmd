@@ -37,6 +37,8 @@ The script makes one parent event for the survey.
 Then it makes one child event for each photo.
 The parent event uses the centre of all photo positions.
 Each child event uses its own photo position.
+The child event ID includes the field group, because the same frame number can
+appear in more than one group.
 
 ### 3. Check the points
 
@@ -49,8 +51,9 @@ This keeps the percent cover clear: 1 point = 1 percent.
 The script groups the points by photo and by CoralNet label.
 It counts the points for each group.
 If the group is a taxon, the script writes an occurrence.
-If the group is substrate or unclear, the script leaves it out.
-If the group is a deferred macroalga, the script leaves it out for now.
+If the group is substrate, unclear, or a generic lichen label, the script
+leaves it out.
+If the group is a functional macroalga group, the script leaves it out for now.
 
 The percent cover is:
 

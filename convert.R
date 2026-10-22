@@ -32,9 +32,27 @@ BASE_DIR <- getwd()
 INPUT_DIR <- file.path(BASE_DIR, "data")
 OUTPUT_DIR <- file.path(BASE_DIR, "output")
 
-# Enter the names of the people who recorded the samples.
-# This text goes into event.recordedBy.
-RECORDED_BY <- "Tylar Murray, Carolina Peralta"
+# Enter the names of the people who recorded each field group.
+# These strings go into occurrence.recordedBy.
+# Use a pipe (|) between names when a group has more than one recorder.
+RECORDED_BY <- c(
+  Group_1 = paste(
+    "Hannah Heutz", "Biel Masnou Domènech", "Valéria Prando",
+    "Ana Soler-Fajardo", "Teresa Madurell", sep = " | "
+  ),
+  Group_2 = paste(
+    "Albert Martinez", "Marco Simoes", "Aghogho Kolawole-Daniels",
+    "Eunice Opeyemi Idowu", "Hector Serrano Cereijo", sep = " | "
+  ),
+  Group_3 = paste(
+    "Martha Vounatsi", "Nhanque Filipe", "Abigail Mwalimu",
+    "Sébastien Lhoumeau", "Mayday Haulofu", "Ahmed Harat", sep = " | "
+  ),
+  Group_4 = paste(
+    "Monika Szynaka", "Pilar Pérez Abellán", "Alfonso Ferreira Sarracino",
+    "Nestor Echedey Bosch Guerra", sep = " | "
+  )
+)
 
 # Short names used in the identifiers.
 PROJECT_CODE <- "MBON-P2P"
@@ -47,7 +65,6 @@ STATE_PROVINCE <- "Azores"
 LOCALITY <- "Forte do Negrito"
 SITE_CODE <- "FDN"
 STRATA <- "MIDTIDE"
-TRANSECT <- "T1"
 WATER_BODY <- "North Atlantic Ocean"
 HABITAT <- "Rocky intertidal, midtide level"
 LOCATION_ID <- paste(PROJECT_CODE, COUNTRY_ID_CODE, ISLAND_CODE, SITE_CODE,
@@ -62,7 +79,7 @@ QUADRAT_WIDTH_CM <- 25
 QUADRAT_HEIGHT_CM <- 25
 CAMERA_HEIGHT_CM <- 42
 COORDINATE_UNCERTAINTY_M <- 1   # photo events, from the camera GPS
-PARENT_UNCERTAINTY_M <- 100     # summary centre of all photo positions
+PARENT_UNCERTAINTY_M <- 500     # full beach, not one photo position
 SAMPLING_PROTOCOL <- paste0(
   "MBON Pole to Pole Rock Shores Intertidal PhotoQuadrat Protocol. ",
   "25 x 25 cm quadrat with camera at 42cm. ",
@@ -120,11 +137,41 @@ TAXA <- list(
     kingdom = "Plantae", phylum = "Chlorophyta",
     class = "Ulvophyceae", order = "Ulvales",
     family = "Ulvaceae", genus = "Ulva"
+  ),
+  FUCUS = list(
+    label_id = "3384", name = "Fucus", aphia = "144129",
+    authorship = "Linnaeus, 1753", rank = "genus",
+    kingdom = "Chromista", phylum = "Ochrophyta",
+    class = "Phaeophyceae", order = "Fucales",
+    family = "Fucaceae", genus = "Fucus"
+  ),
+  G.griffith = list(
+    label_id = "6849", name = "Gymnogongrus griffithsiae",
+    aphia = "145657", authorship = "(Turner) C.Martius, 1833",
+    rank = "species", kingdom = "Plantae", phylum = "Rhodophyta",
+    class = "Florideophyceae", order = "Gigartinales",
+    family = "Phyllophoraceae", genus = "Gymnogongrus"
+  ),
+  LIQYELLLOW = list(
+    label_id = "12958", name = "Caloplaca marina",
+    aphia = "147724", authorship = "Wedd., 1873", rank = "species",
+    kingdom = "Fungi", phylum = "Ascomycota",
+    class = "Lecanoromycetes", order = "Teloschistales",
+    family = "Teloschistaceae", genus = "Caloplaca"
+  ),
+  gastropod = list(
+    label_id = "353", name = "Gastropoda", aphia = "101",
+    authorship = "Cuvier, 1795", rank = "class",
+    kingdom = "Animalia", phylum = "Mollusca",
+    class = "Gastropoda", order = "", family = "", genus = ""
   )
 )
 
 # These labels are not taxa, so they are not written as occurrences.
-EXCLUDED <- c("SC", "Unc")
+EXCLUDED <- c("SC", "Unc", "LICHEN")
+
+# These are functional groups, not single taxa. They are counted as non-taxon
+# points until the group agrees on a taxonomic mapping.
 DEFERRED <- c("MAF", "MAEN")
 
 # =============================================================================
@@ -140,7 +187,7 @@ EVENT_COLUMNS <- c(
   "coordinatePrecision", "verbatimLatitude", "verbatimLongitude",
   "georeferenceProtocol", "locationRemarks", "samplingProtocol",
   "sampleSizeValue", "sampleSizeUnit", "samplingEffort", "fieldNumber",
-  "recordedBy", "eventRemarks"
+  "eventRemarks"
 )
 
 OCCURRENCE_COLUMNS <- c(
@@ -148,7 +195,7 @@ OCCURRENCE_COLUMNS <- c(
   "scientificNameAuthorship", "taxonRank", "kingdom", "phylum", "class",
   "order", "family", "genus", "basisOfRecord", "occurrenceStatus",
   "organismQuantity", "organismQuantityType",
-  "identifiedBy", "identificationRemarks", "occurrenceRemarks"
+  "identifiedBy", "recordedBy", "identificationRemarks", "occurrenceRemarks"
 )
 
 EMOF_COLUMNS <- c(
@@ -199,8 +246,12 @@ six <- function(value) {
 survey_id <- function(date) {
   paste(
     PROJECT_CODE, gsub("-", "", date), COUNTRY_ID_CODE, ISLAND_CODE,
-    SITE_CODE, STRATA, TRANSECT, sep = ":"
+    SITE_CODE, STRATA, sep = ":"
   )
+}
+
+group_code <- function(group) {
+  gsub("Group_", "G", group, fixed = TRUE)
 }
 
 frame_from_name <- function(image_name) {
@@ -245,6 +296,13 @@ build_events <- function(metadata) {
   date_parts <- strsplit(date, "-", fixed = TRUE)[[1]]
   survey <- survey_id(date)
 
+  groups <- sort(unique(metadata$Group))
+  missing_groups <- setdiff(groups, names(RECORDED_BY))
+  if (length(missing_groups) > 0) {
+    stop("These field groups do not have a recordedBy string: ",
+         paste(missing_groups, collapse = ", "))
+  }
+
   # These fields are the same for the parent and the child events.
   common <- list(
     eventDate = date,
@@ -261,8 +319,7 @@ build_events <- function(metadata) {
     habitat = HABITAT,
     geodeticDatum = GEODETIC_DATUM,
     georeferenceProtocol = GEOREFERENCE_PROTOCOL,
-    samplingProtocol = SAMPLING_PROTOCOL,
-    recordedBy = RECORDED_BY
+    samplingProtocol = SAMPLING_PROTOCOL
   )
 
   parent <- c(common, list(
@@ -294,7 +351,9 @@ build_events <- function(metadata) {
   for (i in seq_len(nrow(metadata))) {
     row <- metadata[i, , drop = FALSE]
     image <- row$Name
-    event_id <- paste0(survey, ":IMG", frame_from_name(image))
+    event_id <- paste0(
+      survey, ":", group_code(row$Group), ":IMG", frame_from_name(image)
+    )
     image_events[[image]] <- event_id
     height <- row[["Height (cm)"]]
     if (!nzchar(height)) height <- as.character(CAMERA_HEIGHT_CM)
@@ -386,6 +445,8 @@ build_occurrences <- function(annotations, image_events, metadata) {
     percent <- sprintf("%.2f", count / total * 100)
     event_id <- image_events[[image]]
     occurrence_id <- paste0(event_id, ":aphia-", taxon$aphia)
+    group <- metadata$Group[match(image, metadata$Name)]
+    recorded_by <- unname(RECORDED_BY[[group]])
 
     rows[[length(rows) + 1]] <- list(
       occurrenceID = occurrence_id,
@@ -410,7 +471,8 @@ build_occurrences <- function(annotations, image_events, metadata) {
       occurrenceStatus = "detected",
       organismQuantity = percent,
       organismQuantityType = "percent cover",
-      identifiedBy = paste(annotators, collapse = "; "),
+      identifiedBy = paste(annotators, collapse = "|"),
+      recordedBy = recorded_by,
       identificationRemarks = paste0(
         "CoralNet label ", code, " (ID ", taxon$label_id, "); ",
         count, " of ", total, " points; ",
@@ -489,7 +551,7 @@ build_emof <- function(annotations, events, occurrences) {
       as.character(excluded_total), "counts", counts_unit,
       method = paste(
         "Count of grid points assigned to labels that are not mapped",
-        "to a taxon (substrate, unclear, or deferred macroalgae)"
+        "to a taxon (substrate, unclear, lichen, or deferred macroalgae)"
       ),
       remarks = paste(parts, collapse = "; ")
     )
@@ -583,11 +645,13 @@ write_meta_xml <- function() {
 }
 
 write_readme <- function() {
+  recorded_by <- sprintf("  %s: %s", names(RECORDED_BY), RECORDED_BY)
   text <- c(
     "CoralNet to Darwin Core Archive",
     "",
     "Dataset: MBON Pole to Pole photoquadrats, Azores, 2026",
-    paste("Recorded by:", RECORDED_BY),
+    "Recorded by:",
+    recorded_by,
     "",
     "Files:",
     "  event.csv                       one survey event and one event per photo",

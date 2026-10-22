@@ -6,9 +6,9 @@ The script writes everything to the `output` folder.
 
 | file | rows | what it is |
 |---|---:|---|
-| [`event.csv`](output/event.csv) | 60 | one survey event and 59 photo events |
-| [`occurrence.csv`](output/occurrence.csv) | 106 | one taxon in one photo |
-| [`extendedmeasurementorfact.csv`](output/extendedmeasurementorfact.csv) | 601 | cover, point counts, and quadrat details |
+| [`event.csv`](output/event.csv) | 208 | one survey event and 207 photo events |
+| [`occurrence.csv`](output/occurrence.csv) | 504 | one taxon in one photo |
+| [`extendedmeasurementorfact.csv`](output/extendedmeasurementorfact.csv) | 2,637 | cover, point counts, and quadrat details |
 | [`meta.xml`](output/meta.xml) | — | the Darwin Core Archive descriptor |
 | [`README.txt`](output/README.txt) | — | a short note for the archive |
 | [`p2p-azores-2026.zip`](output/p2p-azores-2026.zip) | — | all files together |
@@ -20,13 +20,15 @@ The zip file is ready to upload to the IPT.
 ### Events
 
 The first row is the parent event for the survey.
-The other 59 rows are the photo events.
+The other 207 rows are the photo events.
 Each photo event has its own latitude and longitude.
 
 ### Occurrences
 
 Each row is one taxon in one photo.
-The row has the scientific name, the AphiaID, the percent cover, and the person or machine that identified it.
+The row has the scientific name, the AphiaID, the percent cover, the
+person or machine that identified it, and the field group's `recordedBy`
+string.
 
 ### Measurements
 
@@ -34,13 +36,13 @@ The eMoF table has seven kinds of measurement:
 
 | measurement | rows | unit |
 |---|---:|---|
-| quadrat area | 59 | square metres |
-| camera height above substrate | 59 | centimetres |
-| number of points classified as non-taxon | 59 | counts |
-| percent cover | 106 | percent |
-| number of points | 106 | counts |
-| machine-annotated points | 106 | counts |
-| human-annotated points | 106 | counts |
+| quadrat area | 207 | square metres |
+| camera height above substrate | 207 | centimetres |
+| number of points classified as non-taxon | 207 | counts |
+| percent cover | 504 | percent |
+| number of points | 504 | counts |
+| machine-annotated points | 504 | counts |
+| human-annotated points | 504 | counts |
 
 ## A first look at the occurrences
 

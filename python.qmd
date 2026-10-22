@@ -25,8 +25,26 @@ BASE_DIR = Path(__file__).resolve().parent
 INPUT_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "output"
 
-# Enter the names of the people who recorded the samples.
-RECORDED_BY = "Tylar Murray, Carolina Peralta"
+# Enter the names of the people who recorded each field group.
+# Use a pipe (|) between names when a group has more than one recorder.
+RECORDED_BY = {
+    "Group_1": (
+        "Hannah Heutz | Biel Masnou Domènech | Valéria Prando | "
+        "Ana Soler-Fajardo | Teresa Madurell"
+    ),
+    "Group_2": (
+        "Albert Martinez | Marco Simoes | Aghogho Kolawole-Daniels | "
+        "Eunice Opeyemi Idowu | Hector Serrano Cereijo"
+    ),
+    "Group_3": (
+        "Martha Vounatsi | Nhanque Filipe | Abigail Mwalimu | "
+        "Sébastien Lhoumeau | Mayday Haulofu | Ahmed Harat"
+    ),
+    "Group_4": (
+        "Monika Szynaka | Pilar Pérez Abellán | Alfonso Ferreira Sarracino | "
+        "Nestor Echedey Bosch Guerra"
+    ),
+}
 
 PROJECT_CODE = "MBON-P2P"
 COUNTRY_CODE = "PT"          # ISO 3166-1 alpha-2
@@ -45,7 +63,7 @@ Photo events use 1 metre position uncertainty.
 The georeference protocol says the GPS is built into the camera.
 The sampling protocol cites the MBON protocol and its two reference links.
 
-The script writes this text to every event:
+Each occurrence uses the string for its photo's group:
 
 ```{python}
 #| echo: false
@@ -53,10 +71,14 @@ import csv
 
 with open("output/event.csv", newline="", encoding="utf-8") as handle:
     events = list(csv.DictReader(handle))
+with open("output/occurrence.csv", newline="", encoding="utf-8") as handle:
+    first_occurrences = list(csv.DictReader(handle))
 
-print("recordedBy:", events[0]["recordedBy"])
-print("survey ID: ", events[0]["eventID"])
-print("photos:    ", len(events) - 1)
+print("survey ID:        ", events[0]["eventID"])
+print("first photo ID:   ", events[1]["eventID"])
+print("photos:           ", len(events) - 1)
+print("first recordedBy: ", first_occurrences[0]["recordedBy"])
+print("first identifiedBy:", first_occurrences[0]["identifiedBy"])
 ```
 
 ## 2. The TAXA table
@@ -79,7 +101,7 @@ TAXA = {
         "class": "Thecostraca", "order": "Balanomorpha",
         "family": "Chthamalidae", "genus": "Chthamalus",
     },
-    # ... four more taxa ...
+    # ... eight more taxa ...
 }
 ```
 
@@ -133,8 +155,11 @@ The photo event ID ends with the frame number.
 def survey_id(date):
     return ":".join([
         PROJECT_CODE, date.replace("-", ""), COUNTRY_ID_CODE,
-        ISLAND_CODE, SITE_CODE, STRATA, TRANSECT,
+        ISLAND_CODE, SITE_CODE, STRATA,
     ])
+
+def group_code(group):
+    return group.replace("Group_", "G")
 
 def frame_from_name(image_name):
     stem = Path(image_name).stem
@@ -143,6 +168,9 @@ def frame_from_name(image_name):
         raise SystemExit(f"Cannot find a 4-digit frame number in {image_name!r}")
     return frame
 ```
+
+The child event ID also includes the group, because the same frame number can
+appear in more than one group.
 
 ```{python}
 #| echo: false
@@ -182,6 +210,7 @@ for (image, code), rows in groups.items():
 
 The `robot` value is written as `CoralNet machine learning annotator` in `identifiedBy`.
 Human usernames are kept as they are.
+When a row has more than one value, the values are separated by `|`.
 
 The percent cover is points divided by total points, times 100.
 

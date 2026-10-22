@@ -7,30 +7,52 @@ These notes explain what it does and what it does not do.
 
 ## The survey
 
-- The script expects one survey date.
-- The example has one transect and one tidal level.
+- The script expects one survey date, one site, and one tidal level.
+- The example has four field groups.
 - Each photo must have 100 points.
 - The camera is the OM System Tough TG-7; the metadata uses the short name `TG-7`.
 - The GPS positions come from the camera's built-in GPS.
 - Photo events use a 1 metre position uncertainty.
-- The parent event uses 100 metres because it is a survey centre point.
-- The script stops if a label is not in the `TAXA` table.
+- The parent event uses 500 metres because it represents the full beach.
+- The script stops if a label is not in the `TAXA`, `EXCLUDED`, or `DEFERRED` lists.
 
 ## The parent event
 
 The parent event is a summary.
-Its latitude and longitude are the centre of the 59 photo positions.
+Its latitude and longitude are the centre of the 207 photo positions.
 It is not a real sampled point.
 The child events are the real photo positions.
+Each child event ID includes its field group, because frame numbers repeat across groups.
 
 ## Names
 
 `recordedBy` is free text at the top of the script.
-It is written to the parent event and to every photo event.
+There is one string for each field group.
+It is written to the occurrence table, not the event table.
+Each occurrence uses the string for its photo's group.
 
 `identifiedBy` lists the CoralNet usernames for human annotations.
 The CoralNet `robot` value is written as `CoralNet machine learning annotator`.
-A mixed row can have more than one name, separated by `; `.
+A mixed row can have more than one name, separated by `|`.
+
+Multi-value Darwin Core strings in this archive use `|` as the separator,
+not `; `.
+
+### About `Imported`
+
+`Imported` is a value in the CoralNet `Annotator` column, not a person's
+username. It means the annotations were added to CoralNet by an import
+process rather than entered one by one under a user account. The export does
+not preserve the original person's username for those points.
+
+In the earlier 523-photo file, `Imported` covered 7,955 points. It is not in
+the current 2026-only file, so the current archive needs no special handling
+for it.
+
+If `Imported` appears in a future export, do not treat it as `robot`. The safe
+choices are to keep the word `Imported` in `identifiedBy` as provenance, or to
+replace it with `CoralNet imported annotation` and explain that choice in
+`identificationRemarks`.
 
 `occurrenceStatus` is `detected` on every row.
 `notDetected` is the other Darwin Core value, but no absence rows are written.
@@ -47,11 +69,14 @@ A mixed row can have more than one name, separated by `; `.
 ## Decisions to review
 
 - `CIRRIPE` is mapped to *Chthamalus stellatus* (AphiaID 106231).
-- `RVL` has one point in one image.
-- `MAF` and `MAEN` are deferred.
+- `RVL` has two points in two images.
+- `FUCUS`, `G.griffith`, `LIQYELLLOW`, and `gastropod` use the WoRMS
+  matches listed in [The data](data.qmd).
+- `LICHEN` is left out because it is a generic lichen label, not one taxon.
+- `MAF` and `MAEN` are deferred because they are functional groups, not taxa.
 - `SC` and `Unc` are left out.
 - Coordinates are rounded to 6 decimal places.
-- Photo events use 1 metre position uncertainty; the parent event uses 100 metres.
+- Photo events use 1 metre position uncertainty; the parent event uses 500 metres.
 
 ## Change it for a new survey
 

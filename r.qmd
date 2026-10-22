@@ -24,8 +24,26 @@ BASE_DIR <- getwd()
 INPUT_DIR <- file.path(BASE_DIR, "data")
 OUTPUT_DIR <- file.path(BASE_DIR, "output")
 
-# Enter the names of the people who recorded the samples.
-RECORDED_BY <- "Tylar Murray, Carolina Peralta"
+# Enter the names of the people who recorded each field group.
+# Use a pipe (|) between names when a group has more than one recorder.
+RECORDED_BY <- c(
+  Group_1 = paste(
+    "Hannah Heutz", "Biel Masnou Domènech", "Valéria Prando",
+    "Ana Soler-Fajardo", "Teresa Madurell", sep = " | "
+  ),
+  Group_2 = paste(
+    "Albert Martinez", "Marco Simoes", "Aghogho Kolawole-Daniels",
+    "Eunice Opeyemi Idowu", "Hector Serrano Cereijo", sep = " | "
+  ),
+  Group_3 = paste(
+    "Martha Vounatsi", "Nhanque Filipe", "Abigail Mwalimu",
+    "Sébastien Lhoumeau", "Mayday Haulofu", "Ahmed Harat", sep = " | "
+  ),
+  Group_4 = paste(
+    "Monika Szynaka", "Pilar Pérez Abellán", "Alfonso Ferreira Sarracino",
+    "Nestor Echedey Bosch Guerra", sep = " | "
+  )
+)
 
 PROJECT_CODE <- "MBON-P2P"
 COUNTRY_CODE <- "PT"        # ISO 3166-1 alpha-2
@@ -44,15 +62,20 @@ Photo events use 1 metre position uncertainty.
 The georeference protocol says the GPS is built into the camera.
 The sampling protocol cites the MBON protocol and its two reference links.
 
-The script writes this text to every event:
+Each occurrence uses the string for its photo's group:
 
 ```{r}
 #| echo: false
 events <- read.csv("output/event.csv", colClasses = "character",
                    check.names = FALSE)
-cat("recordedBy:", events$recordedBy[1], "\n")
-cat("survey ID: ", events$eventID[1], "\n")
-cat("photos:    ", nrow(events) - 1, "\n")
+first_occurrences <- read.csv(
+  "output/occurrence.csv", colClasses = "character", check.names = FALSE
+)
+cat("survey ID:        ", events$eventID[1], "\n")
+cat("first photo ID:   ", events$eventID[2], "\n")
+cat("photos:           ", nrow(events) - 1, "\n")
+cat("first recordedBy: ", first_occurrences$recordedBy[1], "\n")
+cat("first identifiedBy:", first_occurrences$identifiedBy[1], "\n")
 ```
 
 ## 2. The TAXA table
@@ -75,7 +98,7 @@ TAXA <- list(
     class = "Thecostraca", order = "Balanomorpha",
     family = "Chthamalidae", genus = "Chthamalus"
   ),
-  # ... four more taxa ...
+  # ... eight more taxa ...
 )
 ```
 
@@ -126,8 +149,12 @@ The photo event ID ends with the frame number.
 survey_id <- function(date) {
   paste(
     PROJECT_CODE, gsub("-", "", date), COUNTRY_ID_CODE, ISLAND_CODE,
-    SITE_CODE, STRATA, TRANSECT, sep = ":"
+    SITE_CODE, STRATA, sep = ":"
   )
+}
+
+group_code <- function(group) {
+  gsub("Group_", "G", group, fixed = TRUE)
 }
 
 frame_from_name <- function(image_name) {
@@ -139,6 +166,9 @@ frame_from_name <- function(image_name) {
   frame
 }
 ```
+
+The child event ID also includes the group, because the same frame number can
+appear in more than one group.
 
 ```{r}
 #| echo: false
@@ -176,6 +206,7 @@ annotators <- sort(unique(annotators), method = "radix")
 
 The `robot` value is written as `CoralNet machine learning annotator` in `identifiedBy`.
 Human usernames are kept as they are.
+When a row has more than one value, the values are separated by `|`.
 
 The percent cover is points divided by total points, times 100.
 

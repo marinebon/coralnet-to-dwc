@@ -36,9 +36,27 @@ BASE_DIR = Path(__file__).resolve().parent
 INPUT_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "output"
 
-# Enter the names of the people who recorded the samples.
-# This text goes into event.recordedBy.
-RECORDED_BY = "Tylar Murray, Carolina Peralta"
+# Enter the names of the people who recorded each field group.
+# These strings go into occurrence.recordedBy.
+# Use a pipe (|) between names when a group has more than one recorder.
+RECORDED_BY = {
+    "Group_1": (
+        "Hannah Heutz | Biel Masnou Domènech | Valéria Prando | "
+        "Ana Soler-Fajardo | Teresa Madurell"
+    ),
+    "Group_2": (
+        "Albert Martinez | Marco Simoes | Aghogho Kolawole-Daniels | "
+        "Eunice Opeyemi Idowu | Hector Serrano Cereijo"
+    ),
+    "Group_3": (
+        "Martha Vounatsi | Nhanque Filipe | Abigail Mwalimu | "
+        "Sébastien Lhoumeau | Mayday Haulofu | Ahmed Harat"
+    ),
+    "Group_4": (
+        "Monika Szynaka | Pilar Pérez Abellán | Alfonso Ferreira Sarracino | "
+        "Nestor Echedey Bosch Guerra"
+    ),
+}
 
 # Short names used in the identifiers.
 PROJECT_CODE = "MBON-P2P"
@@ -51,7 +69,6 @@ STATE_PROVINCE = "Azores"
 LOCALITY = "Forte do Negrito"
 SITE_CODE = "FDN"
 STRATA = "MIDTIDE"
-TRANSECT = "T1"
 WATER_BODY = "North Atlantic Ocean"
 HABITAT = "Rocky intertidal, midtide level"
 LOCATION_ID = f"{PROJECT_CODE}:{COUNTRY_ID_CODE}:{ISLAND_CODE}:{SITE_CODE}"
@@ -65,7 +82,7 @@ QUADRAT_WIDTH_CM = 25
 QUADRAT_HEIGHT_CM = 25
 CAMERA_HEIGHT_CM = 42
 COORDINATE_UNCERTAINTY_M = 1   # photo events, from the camera GPS
-PARENT_UNCERTAINTY_M = 100     # summary centre of all photo positions
+PARENT_UNCERTAINTY_M = 500     # full beach, not one photo position
 SAMPLING_PROTOCOL = (
     "MBON Pole to Pole Rock Shores Intertidal PhotoQuadrat Protocol. "
     "25 x 25 cm quadrat with camera at 42cm. "
@@ -124,12 +141,44 @@ TAXA = {
         "class": "Ulvophyceae", "order": "Ulvales",
         "family": "Ulvaceae", "genus": "Ulva",
     },
+    "FUCUS": {
+        "label_id": "3384", "name": "Fucus", "aphia": "144129",
+        "authorship": "Linnaeus, 1753", "rank": "genus",
+        "kingdom": "Chromista", "phylum": "Ochrophyta",
+        "class": "Phaeophyceae", "order": "Fucales",
+        "family": "Fucaceae", "genus": "Fucus",
+    },
+    "G.griffith": {
+        "label_id": "6849", "name": "Gymnogongrus griffithsiae",
+        "aphia": "145657", "authorship": "(Turner) C.Martius, 1833",
+        "rank": "species", "kingdom": "Plantae", "phylum": "Rhodophyta",
+        "class": "Florideophyceae", "order": "Gigartinales",
+        "family": "Phyllophoraceae", "genus": "Gymnogongrus",
+    },
+    "LIQYELLLOW": {
+        "label_id": "12958", "name": "Caloplaca marina",
+        "aphia": "147724", "authorship": "Wedd., 1873", "rank": "species",
+        "kingdom": "Fungi", "phylum": "Ascomycota",
+        "class": "Lecanoromycetes", "order": "Teloschistales",
+        "family": "Teloschistaceae", "genus": "Caloplaca",
+    },
+    "gastropod": {
+        "label_id": "353", "name": "Gastropoda", "aphia": "101",
+        "authorship": "Cuvier, 1795", "rank": "class",
+        "kingdom": "Animalia", "phylum": "Mollusca",
+        "class": "Gastropoda", "order": "", "family": "", "genus": "",
+    },
 }
 
 # These labels are not taxa, so they are not written as occurrences.
-EXCLUDED = {"SC": "substrate", "Unc": "unclear"}
+EXCLUDED = {
+    "SC": "substrate",
+    "Unc": "unclear",
+    "LICHEN": "lichen (not one taxon)",
+}
 
-# These are taxa, but the group decided to add them later.
+# These are functional groups, not single taxa. They are counted as non-taxon
+# points until the group agrees on a taxonomic mapping.
 DEFERRED = {"MAF": "filamentous macroalgae", "MAEN": "encrusting macroalgae"}
 
 # =============================================================================
@@ -143,7 +192,7 @@ EVENT_COLUMNS = (
     "decimalLatitude decimalLongitude geodeticDatum "
     "coordinateUncertaintyInMeters coordinatePrecision verbatimLatitude "
     "verbatimLongitude georeferenceProtocol locationRemarks samplingProtocol "
-    "sampleSizeValue sampleSizeUnit samplingEffort fieldNumber recordedBy "
+    "sampleSizeValue sampleSizeUnit samplingEffort fieldNumber "
     "eventRemarks"
 ).split()
 
@@ -151,7 +200,8 @@ OCCURRENCE_COLUMNS = (
     "occurrenceID eventID scientificName scientificNameID "
     "scientificNameAuthorship taxonRank kingdom phylum class order family "
     "genus basisOfRecord occurrenceStatus organismQuantity "
-    "organismQuantityType identifiedBy identificationRemarks occurrenceRemarks"
+    "organismQuantityType identifiedBy recordedBy identificationRemarks "
+    "occurrenceRemarks"
 ).split()
 
 EMOF_COLUMNS = (
@@ -200,13 +250,17 @@ def survey_id(date):
             ISLAND_CODE,
             SITE_CODE,
             STRATA,
-            TRANSECT,
         ]
     )
 
 
+def group_code(group):
+    """Turn 'Group_1' into 'G1' for use in an event ID."""
+    return group.replace("Group_", "G")
+
+
 def frame_from_name(image_name):
-    """Turn '20261020__Transect_1_C0020128.jpg' into '0128'."""
+    """Use the last four characters of the image name as the frame code."""
     stem = Path(image_name).stem
     frame = stem.split("_")[-1][-4:]
     if not frame.isdigit():
@@ -248,6 +302,14 @@ def build_events(metadata):
     year, month, day = date.split("-")
     survey = survey_id(date)
 
+    groups = sorted({row["Group"] for row in metadata})
+    missing_groups = [group for group in groups if group not in RECORDED_BY]
+    if missing_groups:
+        raise SystemExit(
+            "These field groups do not have a recordedBy string: "
+            + ", ".join(missing_groups)
+        )
+
     latitudes = [float(row["Latitude"]) for row in metadata]
     longitudes = [float(row["Longitude"]) for row in metadata]
 
@@ -261,7 +323,6 @@ def build_events(metadata):
         "geodeticDatum": GEODETIC_DATUM,
         "georeferenceProtocol": GEOREFERENCE_PROTOCOL,
         "samplingProtocol": SAMPLING_PROTOCOL,
-        "recordedBy": RECORDED_BY,
     }
 
     # The parent event is a summary of the whole survey.
@@ -292,7 +353,9 @@ def build_events(metadata):
     image_events = {}
     for row in metadata:
         image = row["Name"]
-        event_id = f"{survey}:IMG{frame_from_name(image)}"
+        event_id = (
+            f"{survey}:{group_code(row['Group'])}:IMG{frame_from_name(image)}"
+        )
         image_events[image] = event_id
         height = row.get("Height (cm)") or str(CAMERA_HEIGHT_CM)
         events.append({
@@ -362,6 +425,7 @@ def build_occurrences(annotations, image_events, metadata):
         key = (row["Name"], row["Label code"])
         groups.setdefault(key, []).append(row)
 
+    metadata_by_image = {row["Name"]: row for row in metadata}
     image_order = {row["Name"]: index for index, row in enumerate(metadata)}
     taxon_order = {code: index for index, code in enumerate(TAXA)}
     ordered_keys = sorted(
@@ -391,6 +455,8 @@ def build_occurrences(annotations, image_events, metadata):
         percent = f"{points / total * 100:.2f}"
         event_id = image_events[image]
         occurrence_id = f"{event_id}:aphia-{taxon['aphia']}"
+        group = metadata_by_image[image]["Group"]
+        recorded_by = RECORDED_BY[group]
 
         occurrences.append({
             "occurrenceID": occurrence_id,
@@ -413,7 +479,8 @@ def build_occurrences(annotations, image_events, metadata):
             "occurrenceStatus": "detected",
             "organismQuantity": percent,
             "organismQuantityType": "percent cover",
-            "identifiedBy": "; ".join(annotators),
+            "identifiedBy": "|".join(annotators),
+            "recordedBy": recorded_by,
             "identificationRemarks": (
                 f"CoralNet label {code} (ID {taxon['label_id']}); "
                 f"{points} of {total} points; "
@@ -484,7 +551,8 @@ def build_emof(annotations, events, occurrences):
             str(excluded_total), "counts", counts_unit,
             method=(
                 "Count of grid points assigned to labels that are not mapped "
-                "to a taxon (substrate, unclear, or deferred macroalgae)"
+                "to a taxon (substrate, unclear, lichen, or deferred "
+                "macroalgae)"
             ),
             remarks="; ".join(parts),
         ))
@@ -571,10 +639,14 @@ def write_meta_xml():
 
 def write_readme():
     """Write a short README that travels inside the zip file."""
+    recorded_by = "\n".join(
+        f"  {group}: {RECORDED_BY[group]}" for group in sorted(RECORDED_BY)
+    )
     text = f"""CoralNet to Darwin Core Archive
 
 Dataset: MBON Pole to Pole photoquadrats, Azores, 2026
-Recorded by: {RECORDED_BY}
+Recorded by:
+{recorded_by}
 
 Files:
   event.csv                       one survey event and one event per photo
