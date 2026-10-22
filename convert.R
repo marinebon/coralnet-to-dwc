@@ -62,7 +62,7 @@ COUNTRY_ID_CODE <- "PRT"    # ISO 3166-1 alpha-3, used in the identifiers
 ISLAND <- "Terceira"
 ISLAND_CODE <- "TER"
 STATE_PROVINCE <- "Azores"
-LOCALITY <- "Forte do Negrito"
+LOCALITY <- "Negrito"
 SITE_CODE <- "FDN"
 STRATA <- "MIDTIDE"
 WATER_BODY <- "North Atlantic Ocean"
